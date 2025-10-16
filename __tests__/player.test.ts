@@ -11,6 +11,7 @@ describe('Player', () => {
         mockCharacter = {
             id: 'test-character',
             name: 'Test Character',
+            age: 20,
             birthday: DateTime.now(),
             description: 'A test character',
             mightScale: [0, 2, 3, 4, 5, 6, 7, 8, 8],
