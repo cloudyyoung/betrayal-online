@@ -6,80 +6,106 @@ export class Player {
     character: PlayableCharacter
     team: PlayerTeam
 
-    mightIndex: CharacterTraitScaleIndex;
-    speedIndex: CharacterTraitScaleIndex;
-    sanityIndex: CharacterTraitScaleIndex;
-    knowledgeIndex: CharacterTraitScaleIndex;
+    private _mightIndex: CharacterTraitScaleIndex;
+    private _speedIndex: CharacterTraitScaleIndex;
+    private _sanityIndex: CharacterTraitScaleIndex;
+    private _knowledgeIndex: CharacterTraitScaleIndex;
 
     constructor(id: string, character: PlayableCharacter) {
         this.id = id;
         this.character = character;
         this.team = 'NEUTRAL';
 
-        this.mightIndex = character.startingMightIndex;
-        this.speedIndex = character.startingSpeedIndex;
-        this.sanityIndex = character.startingSanityIndex;
-        this.knowledgeIndex = character.startingKnowledgeIndex;
+        this._mightIndex = character.startingMightIndex;
+        this._speedIndex = character.startingSpeedIndex;
+        this._sanityIndex = character.startingSanityIndex;
+        this._knowledgeIndex = character.startingKnowledgeIndex;
     }
 
     get might() {
-        return this.character.mightScale[this.mightIndex] as number
+        return this.character.mightScale[this._mightIndex]
     }
 
     get speed() {
-        return this.character.speedScale[this.speedIndex] as number
+        return this.character.speedScale[this._speedIndex]
     }
 
     get sanity() {
-        return this.character.sanityScale[this.sanityIndex] as number
+        return this.character.sanityScale[this._sanityIndex]
     }
 
     get knowledge() {
-        return this.character.knowledgeScale[this.knowledgeIndex] as number
+        return this.character.knowledgeScale[this._knowledgeIndex]
     }
 
-    private clampTraitScaleIndex(index: number, scaleLength: number) {
-        if (index < 0) {
-            return 0
-        } else if (index >= scaleLength) {
-            return scaleLength - 1
+    get mightIndex() {
+        return this._mightIndex
+    }
+
+    get speedIndex() {
+        return this._speedIndex
+    }
+
+    get sanityIndex() {
+        return this._sanityIndex
+    }
+
+    get knowledgeIndex() {
+        return this._knowledgeIndex
+    }
+
+    set mightIndex(index: number) {
+        this._mightIndex = clampTraitScaleIndex(index)
+    }
+
+    set speedIndex(index: number) {
+        this._speedIndex = clampTraitScaleIndex(index)
+    }
+
+    set sanityIndex(index: number) {
+        this._sanityIndex = clampTraitScaleIndex(index)
+    }
+
+    set knowledgeIndex(index: number) {
+        this._knowledgeIndex = clampTraitScaleIndex(index)
+    }
+
+    public updateTraits({mightDelta, speedDelta, sanityDelta, knowledgeDelta}: Partial<{mightDelta: number | undefined, speedDelta: number | undefined, sanityDelta: number | undefined, knowledgeDelta: number | undefined}>) {
+        if (mightDelta !== undefined) {
+            this.mightIndex += mightDelta
         }
-        return index
-    }
-
-    set might(index: number) {
-        this.mightIndex = this.clampTraitScaleIndex(index, this.character.mightScale.length)
-    }
-
-    set speed(index: number) {
-        this.speedIndex = this.clampTraitScaleIndex(index, this.character.speedScale.length)
-    }
-
-    set sanity(index: number) {
-        this.sanityIndex = this.clampTraitScaleIndex(index, this.character.sanityScale.length)
-    }
-
-    set knowledge(index: number) {
-        this.knowledgeIndex = this.clampTraitScaleIndex(index, this.character.knowledgeScale.length)
+        if (speedDelta !== undefined) {
+            this.speedIndex += speedDelta
+        }
+        if (sanityDelta !== undefined) {
+            this.sanityIndex += sanityDelta
+        }
+        if (knowledgeDelta !== undefined) {
+            this.knowledgeIndex += knowledgeDelta
+        }
     }
 
     get isMightCritical() {
-        return this.mightIndex === 1
+        return this._mightIndex === 1
     }
 
     get isSpeedCritical() {
-        return this.speedIndex === 1
+        return this._speedIndex === 1
     }
 
     get isSanityCritical() {
-        return this.sanityIndex === 1
+        return this._sanityIndex === 1
     }
 
     get isKnowledgeCritical() {
-        return this.knowledgeIndex === 1
+        return this._knowledgeIndex === 1
     }
 
     get isDead() {
-        return this.mightIndex === 0 || this.sanityIndex === 0 || this.speedIndex === 0 || this.knowledgeIndex === 0
+        return this._mightIndex === 0 || this._sanityIndex === 0 || this._speedIndex === 0 || this._knowledgeIndex === 0
     }
+}
+
+const clampTraitScaleIndex = (index: number) => {
+    return Math.min(Math.max(index, 0), 8)
 }

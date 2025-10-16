@@ -5,7 +5,7 @@ export interface CharacterTraitScale extends Array<number> {
     length: 9;
 }
 
-export type CharacterTraitScaleIndex = keyof CharacterTraitScale;
+export type CharacterTraitScaleIndex = number;
 
 export interface Character {
     id: string;
