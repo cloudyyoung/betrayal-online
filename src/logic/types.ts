@@ -25,13 +25,12 @@ export type PlayerTeam = 'NEUTRAL' | 'SURVIVOR' | 'TRAITOR';
 
 
 export interface BetrayalGameState {
-    scenarioCard: ScenarioCard
-    players: Player[]
+    scenarioCard?: Record<string, any>
+    players: Record<string, Record<string, any>>
     haunt?: Haunt
 }
 
 export interface BetrayalGameSetupData {
-    scenarioCard: ScenarioCard
-    players: Player[]
+    numPlayers: number;
 }
 export const BetrayalGame: Game<BetrayalGameState, {}, BetrayalGameSetupData> = {};

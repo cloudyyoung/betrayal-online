@@ -38,6 +38,17 @@ export interface MonsterCharacter extends Character {
     knowledge: number;    
 }
 
+export const getCharacterById = (id: string): PlayableCharacter | undefined => {
+    for (const set of playableCharacterSets) {
+        if (set.a.id === id) {
+            return set.a;
+        } else if (set.b.id === id) {
+            return set.b;
+        }
+    }
+    return undefined;
+}
+
 const getBirthday = (month: number, day: number) => {
     const from = DateTime.now();
     const target = DateTime.fromObject({ year: from.year, month, day });

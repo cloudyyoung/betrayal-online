@@ -1,29 +1,56 @@
+import { ActivePlayers } from 'boardgame.io/core';
+import { Player } from "./logic/player";
 import type { BetrayalGame } from "./logic/types";
+import { getCharacterById } from './logic/character';
 
 
 export const Betrayal: typeof BetrayalGame = {
-  name: "Betrayal at the House on the Hill (3rd Edition)",
+  name: "betrayal-at-the-house-on-the-hill-3rd-edition",
 
   setup: (_, setupData) => {
-    return { haunt: undefined, scenarioCard: setupData!.scenarioCard, players: setupData!.players }
+    return { scenarioCard: undefined, players: {}, haunt: undefined };
   },
+
+  minPlayers: 3,
+  maxPlayers: 6,
 
   phases: {
-    prehaunt: {
+    characterSelection: {
       start: true,
-      endIf: ({G}) => G.haunt !== undefined,
+      next: 'scenarioSelection',
+      turn: {
+        activePlayers: ActivePlayers.ALL,
+        minMoves: 1,
+      },
+      moves: {
+        chooseCharacter: ({G, ctx, playerID}, characterId) => {
+          console.log(G, ctx, playerID)
+          const character = getCharacterById(characterId);
+          
+          if (!character) {
+            throw new Error(`Character with id ${characterId} not found`);
+          }
+
+          G.players[playerID] = JSON.parse(JSON.stringify(new Player(playerID, character)));
+        },
+      },
+    },
+    scenarioSelection: {
+      next: 'prehaunt',
+    },
+    prehaunt: {
+      next: 'hauntSetup',
+      endIf: ({ G }) => G.haunt !== undefined,
+      moves: {
+        
+      }
     },
     hauntSetup: {
-
+      next: 'haunt',
     },
     haunt: {
-
-    }
-  },
-
-  moves: {
-    clickCell: ({ G, playerID }, id) => {
-      console.log(`Player ${playerID} clicked on cell ${id}`);
+      next: 'end',
     },
+    end: {},
   },
 };
