@@ -1,19 +1,17 @@
-// Game.ts
-import type { Game } from "boardgame.io";
+import type { BetrayalGame } from "./logic/types";
 
-export interface BetrayalGameState {
-  scenario?: number;
-}
-
-export const BetrayalGame: Game<BetrayalGameState> = {};
 
 export const Betrayal: typeof BetrayalGame = {
-  setup: () => ({ scenario: undefined }),
+  name: "Betrayal at the House on the Hill (3rd Edition)",
+
+  setup: (_, setupData) => {
+    return { haunt: undefined, scenarioCard: setupData!.scenarioCard, players: setupData!.players }
+  },
 
   phases: {
     prehaunt: {
       start: true,
-      endIf: ({G}) => G.scenario !== undefined,
+      endIf: ({G}) => G.haunt !== undefined,
     },
     hauntSetup: {
 
