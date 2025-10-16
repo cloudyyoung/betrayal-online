@@ -21,6 +21,10 @@ const config: Config = {
     '^.+\\.tsx?$': ['ts-jest', {
       tsconfig: {
         jsx: 'react-jsx',
+        experimentalDecorators: true,
+        emitDecoratorMetadata: true,
+        target: 'ES2020',
+        module: 'ESNext'
       },
     }],
   },
