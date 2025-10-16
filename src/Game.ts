@@ -1,22 +1,31 @@
 // Game.ts
-import type { Game, Move } from "boardgame.io";
+import type { Game } from "boardgame.io";
 
-export interface MyGameState {
-  cells: (string | null)[];
+export interface BetrayalGameState {
+  scenario?: number;
 }
 
-const move: Move<MyGameState> = ({ G, ctx }) => {};
+export const BetrayalGame: Game<BetrayalGameState> = {};
 
-export const MyGame: Game<MyGameState> = {
-  // ...
-};
+export const Betrayal: typeof BetrayalGame = {
+  setup: () => ({ scenario: undefined }),
 
-export const TicTacToe: typeof MyGame = {
-  setup: () => ({ cells: Array(9).fill(null) }),
+  phases: {
+    prehaunt: {
+      start: true,
+      endIf: ({G}) => G.scenario !== undefined,
+    },
+    hauntSetup: {
+
+    },
+    haunt: {
+
+    }
+  },
 
   moves: {
     clickCell: ({ G, playerID }, id) => {
-      G.cells[id] = playerID;
+      console.log(`Player ${playerID} clicked on cell ${id}`);
     },
   },
 };

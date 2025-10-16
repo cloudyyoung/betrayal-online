@@ -1,6 +1,6 @@
 import { Client } from 'boardgame.io/react';
-import { TicTacToe } from './Game';
+import { Betrayal } from './Game';
 
-const App = Client({ game: TicTacToe });
+const App = Client({ game: Betrayal });
 
 export default App;
