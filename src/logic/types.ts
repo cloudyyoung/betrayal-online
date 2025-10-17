@@ -1,6 +1,5 @@
 import type { Game } from "boardgame.io";
 import { Player } from "./player";
-import { ScenarioCard } from "./cards";
 import { Haunt } from "./haunt";
 
 export type HauntTraitorCondition = 'HAUNT_REVEALER'
@@ -24,7 +23,7 @@ export type RoomTileInducedCardType = 'OMEN' | 'EVENT' | 'ITEM';
 export type PlayerTeam = 'NEUTRAL' | 'SURVIVOR' | 'TRAITOR';
 
 
-export interface BetrayalGameStatePlayer extends Pick<Player, 'id' | 'character' | 'team' | 'mightIndex' | 'speedIndex' | 'knowledgeIndex' | 'sanityIndex'> {}
+export interface BetrayalGameStatePlayer extends Pick<Player, 'id' | 'characterId' | 'team' | 'mightIndex' | 'speedIndex' | 'knowledgeIndex' | 'sanityIndex'> { }
 
 export interface BetrayalGameState {
     scenarioCardId?: string

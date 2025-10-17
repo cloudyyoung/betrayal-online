@@ -1,4 +1,4 @@
-import { PlayableCharacter, CharacterTraitScaleIndex, getCharacterById, PlayableCharacterId } from './character';
+import { PlayableCharacter, CharacterTraitScaleIndex, getCharacterById, type PlayableCharacterId } from './character';
 import { PlayerTeam } from "./types";
 
 export class Player {
@@ -26,6 +26,10 @@ export class Player {
         this._speedIndex = character.startingSpeedIndex;
         this._sanityIndex = character.startingSanityIndex;
         this._knowledgeIndex = character.startingKnowledgeIndex;
+    }
+
+    get characterId() {
+        return this.character.id
     }
 
     get might() {

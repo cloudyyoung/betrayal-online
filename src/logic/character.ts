@@ -13,6 +13,7 @@ export interface Character {
 }
 
 export interface PlayableCharacter extends Character {
+    id: PlayableCharacterId
     color: string
     age: number
     birthday: DateTime
@@ -34,7 +35,20 @@ export interface MonsterCharacter extends Character {
     knowledge: number;
 }
 
-export type PlayableCharacterId = typeof playableCharacters[number]['id'];
+export type PlayableCharacterId =
+    | 'josef-hooper'
+    | 'oliver-swift'
+    | 'stephanie-richter'
+    | 'persephone-puleri'
+    | 'sammy-angler'
+    | 'jaden-jones'
+    | 'isa-valencia'
+    | 'anita-hernandez'
+    | 'father-warren-leung'
+    | 'dan-nguyen'
+    | 'michelle-monroe'
+    | 'brittani-bowen';
+
 export const getCharacterById = (id: PlayableCharacterId): PlayableCharacter | undefined => {
     return playableCharacters.find(c => c.id === id);
 }
