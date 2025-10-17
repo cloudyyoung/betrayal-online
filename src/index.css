@@ -1,3 +1,28 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@font-face {
+    font-family: 'ITC Legacy Sans';
+    src: url('/fonts/ITC%20Legacy%20Sans%20Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Tomarik Brush';
+    src: url('/fonts/tomarik-brush.woff2') format('woff2'),
+        url('/fonts/tomarik-brush.woff') format('woff'),
+        url('/fonts/tomarik-brush.eot') format('embedded-opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@theme {
+    --font-legacy-sans: 'ITC Legacy Sans', sans-serif;
+    --font-tomarik-brush: 'Tomarik Brush', cursive;
+}
+
+html {
+    @apply font-legacy-sans;
+}

@@ -7,7 +7,7 @@ const getPortraitUrl = (id: string) => `/portraits/${id.replace(/-/g, '_')}.png`
 export const CharacterSelection = () => {
     return (
         <div className="min-h-screen bg-gray-900 flex flex-col items-center py-8">
-            <h1 className="text-3xl font-bold text-white mb-8">Select Your Character</h1>
+            <h1 className="text-3xl font-medium text-white mb-8 font-tomarik-brush">Select Your Character</h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 w-full max-w-6xl px-4">
                 {playableCharacters.map((character) => (
                     <div
@@ -19,7 +19,7 @@ export const CharacterSelection = () => {
                             <img
                                 src={getPortraitUrl(character.id)}
                                 alt={character.name}
-                                className="object-contain w-full h-full group-hover:scale-105 transition-transform duration-200"
+                                className="object-contain w-full h-full transition-transform duration-200"
                                 width={154}
                                 height={196}
                                 loading="lazy"

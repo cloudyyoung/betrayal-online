@@ -45,7 +45,7 @@ export type PlayableCharacterId =
     | 'isa-valencia'
     | 'anita-hernandez'
     | 'father-warren-leung'
-    | 'dan-nguyen'
+    | 'dan-nguyen-md'
     | 'michelle-monroe'
     | 'brittani-bowen';
 
@@ -167,7 +167,7 @@ export const playableCharacters = [
         color: 'yellow',
         age: 11,
         birthday: getBirthday(3, 30),
-        description: "Isa’s always been a bit off. A strange kid with an interest in the paranormal, she has a strong belief in the supernatural. She spends her night watching reruns of Bros vs. Ghosts on late night TV. Anita enjoys talking with Brittani about the darker side of electronic music, often borrowing CDs to have on in the background while she blogs.",
+        description: "Isa's always been a bit off. A strange kid with an interest in the paranormal, she has a strong belief in the supernatural. She spends her night watching reruns of Bros vs. Ghosts on late night TV. Anita enjoys talking with Brittani about the darker side of electronic music, often borrowing CDs to have on in the background while she blogs.",
         mightScale: [0, 2, 3, 3, 3, 4, 5, 6, 7],
         startingMightIndex: 4,
         speedScale: [0, 4, 4, 5, 5, 6, 7, 8, 8],
@@ -210,7 +210,7 @@ export const playableCharacters = [
         startingKnowledgeIndex: 3,
     },
     {
-        id: 'dan-nguyen',
+        id: 'dan-nguyen-md',
         name: 'Dan Nguyen, M.D.',
         color: 'white',
         age: 60,
