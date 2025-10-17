@@ -25,11 +25,11 @@ export const Betrayal: typeof BetrayalGame = {
       },
       moves: {
         chooseCharacter: ({ G, playerID }, characterId) => {
-          const player = new Player(playerID!, characterId)
+          const player = new Player({ id: playerID, characterId });
           const plain = instanceToPlain(player)
           G.players[playerID] = plain
-          // const p = plainToInstance(Player, plain)
-          // console.log(p.character)
+          const p = plainToInstance(Player, plain)
+          console.log(p)
         },
       },
     },

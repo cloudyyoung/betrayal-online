@@ -1,6 +1,11 @@
 import { CharacterTraitScaleIndex, getCharacterById, type PlayableCharacterId } from './character';
 import { PlayerTeam } from "./types";
 
+export type PlayerConstructorParams = {
+    id: string;
+    characterId: PlayableCharacterId;
+} | undefined
+
 export class Player {
     id: string;
 
@@ -12,12 +17,23 @@ export class Player {
     sanityIndex: CharacterTraitScaleIndex;
     knowledgeIndex: CharacterTraitScaleIndex;
 
-    constructor(id: string, characterId: PlayableCharacterId) {
-        this.id = id;
-        this.characterId = characterId;
+    constructor(params: PlayerConstructorParams) {
+        if (!params) {
+            this.id = '';
+            this.characterId = 'josef-hooper';
+            this.team = 'NEUTRAL';
+            this.mightIndex = 0;
+            this.speedIndex = 0;
+            this.sanityIndex = 0;
+            this.knowledgeIndex = 0;
+            return;
+        }
+
+        this.id = params.id;
+        this.characterId = params.characterId;
         this.team = 'NEUTRAL';
 
-        const character = getCharacterById(characterId);
+        const character = getCharacterById(params.characterId);
         this.mightIndex = character.startingMightIndex;
         this.speedIndex = character.startingSpeedIndex;
         this.sanityIndex = character.startingSanityIndex;
