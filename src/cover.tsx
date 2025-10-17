@@ -1,5 +1,6 @@
 import { LobbyClient } from 'boardgame.io/client';
 import { Button } from './components/button';
+import { Link } from 'react-router-dom'
 
 const lobbyClient = new LobbyClient({
     server: `http://${window.location.hostname}:8000`,
@@ -31,8 +32,12 @@ const BetrayalCover = () => {
                         alt="logo"
                     />
                     <div className='space-x-4'>
-                        <Button className='bg-yellow-700 text-white font-tomarik-brush text-xl px-6 py-4 hover:bg-yellow-600'>Create New Game</Button>
-                        <Button className='bg-white/80 text-amber-700 font-tomarik-brush text-xl px-6 py-4 hover:bg-white/100'>Join Existing</Button>
+                        <Link to="/play">
+                            <Button className='bg-yellow-700 text-white font-tomarik-brush text-xl px-6 py-4 hover:bg-yellow-600'>Create New Game</Button>
+                        </Link>
+                        <Link to="/play">
+                            <Button className='bg-white/80 text-amber-700 font-tomarik-brush text-xl px-6 py-4 hover:bg-white/100'>Join Existing</Button>
+                        </Link>
                     </div>
                 </div>
                 <div className='text-zinc-700 italic text-xs tracking-tighter leading-3 sticky bottom-0 left-0 right-0'>
