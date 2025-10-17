@@ -1,5 +1,5 @@
 import { ActivePlayers } from 'boardgame.io/core';
-import { instanceToPlain } from 'class-transformer';
+import { instanceToPlain, plainToInstance } from 'class-transformer';
 
 import type { BetrayalGame } from "./logic/types";
 import { Player } from './logic/player';
@@ -25,8 +25,11 @@ export const Betrayal: typeof BetrayalGame = {
       },
       moves: {
         chooseCharacter: ({ G, playerID }, characterId) => {
-          const player = new Player(playerID!, characterId);
-          G.players[playerID] = instanceToPlain(player);
+          const player = new Player(playerID!, characterId)
+          const plain = instanceToPlain(player)
+          G.players[playerID] = plain
+          // const p = plainToInstance(Player, plain)
+          // console.log(p.character)
         },
       },
     },

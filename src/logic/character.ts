@@ -49,8 +49,8 @@ export type PlayableCharacterId =
     | 'michelle-monroe'
     | 'brittani-bowen';
 
-export const getCharacterById = (id: PlayableCharacterId): PlayableCharacter | undefined => {
-    return playableCharacters.find(c => c.id === id);
+export const getCharacterById = (id: PlayableCharacterId) => {
+    return playableCharactersById[id];
 }
 
 const getBirthday = (month: number, day: number) => {
@@ -258,3 +258,8 @@ export const playableCharacters = [
         startingKnowledgeIndex: 4,
     },
 ] as const satisfies readonly PlayableCharacter[]
+
+export const playableCharactersById: Record<PlayableCharacterId, PlayableCharacter> = playableCharacters.reduce((acc, character) => {
+    acc[character.id] = character;
+    return acc;
+}, {} as Record<PlayableCharacterId, PlayableCharacter>);

@@ -1,12 +1,10 @@
-import { Exclude, Expose } from 'class-transformer';
-import { type PlayableCharacter, CharacterTraitScaleIndex, getCharacterById, type PlayableCharacterId } from './character';
+import { CharacterTraitScaleIndex, getCharacterById, type PlayableCharacterId } from './character';
 import { PlayerTeam } from "./types";
 
 export class Player {
     id: string;
 
-    @Exclude()
-    character: PlayableCharacter
+    characterId: PlayableCharacterId
     team: PlayerTeam
 
     mightIndex: CharacterTraitScaleIndex;
@@ -15,43 +13,33 @@ export class Player {
     knowledgeIndex: CharacterTraitScaleIndex;
 
     constructor(id: string, characterId: PlayableCharacterId) {
-        const character = getCharacterById(characterId);
-
-        if (!character) {
-            throw new Error(`Character with id ${characterId} not found`);
-        }
-
         this.id = id;
-        this.character = character;
+        this.characterId = characterId;
         this.team = 'NEUTRAL';
 
+        const character = getCharacterById(characterId);
         this.mightIndex = character.startingMightIndex;
         this.speedIndex = character.startingSpeedIndex;
         this.sanityIndex = character.startingSanityIndex;
         this.knowledgeIndex = character.startingKnowledgeIndex;
     }
 
-    @Expose()
-    get characterId() {
-        return this.character.id
+    get character() {
+        return getCharacterById(this.characterId);
     }
 
-    @Expose()
     get might() {
         return this.character.mightScale[this.mightIndex]
     }
 
-    @Expose()
     get speed() {
         return this.character.speedScale[this.speedIndex]
     }
 
-    @Expose()
     get sanity() {
         return this.character.sanityScale[this.sanityIndex]
     }
 
-    @Expose()
     get knowledge() {
         return this.character.knowledgeScale[this.knowledgeIndex]
     }
@@ -71,27 +59,22 @@ export class Player {
         }
     }
 
-    @Expose()
     get isMightCritical() {
         return this.mightIndex === 1
     }
 
-    @Expose()
     get isSpeedCritical() {
         return this.speedIndex === 1
     }
 
-    @Expose()
     get isSanityCritical() {
         return this.sanityIndex === 1
     }
 
-    @Expose()
     get isKnowledgeCritical() {
         return this.knowledgeIndex === 1
     }
 
-    @Expose()
     get isDead() {
         return this.mightIndex === 0 || this.sanityIndex === 0 || this.speedIndex === 0 || this.knowledgeIndex === 0
     }
