@@ -1,4 +1,4 @@
-import { PlayableCharacter, CharacterTraitScaleIndex } from './character';
+import { PlayableCharacter, CharacterTraitScaleIndex, getCharacterById, PlayableCharacterId } from './character';
 import { PlayerTeam } from "./types";
 
 export class Player {
@@ -11,7 +11,13 @@ export class Player {
     private _sanityIndex: CharacterTraitScaleIndex;
     private _knowledgeIndex: CharacterTraitScaleIndex;
 
-    constructor(id: string, character: PlayableCharacter) {
+    constructor(id: string, characterId: PlayableCharacterId) {
+        const character = getCharacterById(characterId);
+
+        if (!character) {
+            throw new Error(`Character with id ${characterId} not found`);
+        }
+
         this.id = id;
         this.character = character;
         this.team = 'NEUTRAL';
@@ -70,7 +76,7 @@ export class Player {
         this._knowledgeIndex = clampTraitScaleIndex(index)
     }
 
-    public updateTraits({mightDelta, speedDelta, sanityDelta, knowledgeDelta}: Partial<{mightDelta: number | undefined, speedDelta: number | undefined, sanityDelta: number | undefined, knowledgeDelta: number | undefined}>) {
+    public updateTraits({ mightDelta, speedDelta, sanityDelta, knowledgeDelta }: Partial<{ mightDelta: number | undefined, speedDelta: number | undefined, sanityDelta: number | undefined, knowledgeDelta: number | undefined }>) {
         if (mightDelta !== undefined) {
             this.mightIndex += mightDelta
         }

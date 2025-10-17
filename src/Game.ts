@@ -25,13 +25,7 @@ export const Betrayal: typeof BetrayalGame = {
       moves: {
         chooseCharacter: ({G, ctx, playerID}, characterId) => {
           console.log(G, ctx, playerID)
-          const character = getCharacterById(characterId);
-          
-          if (!character) {
-            throw new Error(`Character with id ${characterId} not found`);
-          }
-
-          G.players[playerID] = JSON.parse(JSON.stringify(new Player(playerID, character)));
+          G.players[playerID] = JSON.parse(JSON.stringify(new Player(playerID, characterId)));
         },
       },
     },

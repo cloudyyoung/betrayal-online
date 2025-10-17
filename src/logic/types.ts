@@ -24,9 +24,11 @@ export type RoomTileInducedCardType = 'OMEN' | 'EVENT' | 'ITEM';
 export type PlayerTeam = 'NEUTRAL' | 'SURVIVOR' | 'TRAITOR';
 
 
+export interface BetrayalGameStatePlayer extends Pick<Player, 'id' | 'character' | 'team' | 'mightIndex' | 'speedIndex' | 'knowledgeIndex' | 'sanityIndex'> {}
+
 export interface BetrayalGameState {
-    scenarioCard?: Record<string, any>
-    players: Record<string, Record<string, any>>
+    scenarioCardId?: string
+    players: Record<string, BetrayalGameStatePlayer>
     haunt?: Haunt
 }
 
