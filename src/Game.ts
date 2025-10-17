@@ -29,8 +29,8 @@ export const Betrayal: typeof BetrayalGame = {
           const plain = instanceToPlain(player)
           G.players[playerID] = plain
         },
-      },
 
+      },
     },
     scenarioSelection: {
       next: 'prehaunt',
