@@ -1,13 +1,14 @@
 import { ActivePlayers } from 'boardgame.io/core';
-import { Player } from "./logic/player";
+import { instanceToPlain } from 'class-transformer';
+
 import type { BetrayalGame } from "./logic/types";
-import { getCharacterById } from './logic/character';
+import { Player } from './logic/player';
 
 
 export const Betrayal: typeof BetrayalGame = {
   name: "betrayal-at-the-house-on-the-hill-3rd-edition",
 
-  setup: (_, setupData) => {
+  setup: (_, __) => {
     return { scenarioCard: undefined, players: {}, haunt: undefined };
   },
 
@@ -23,9 +24,9 @@ export const Betrayal: typeof BetrayalGame = {
         minMoves: 1,
       },
       moves: {
-        chooseCharacter: ({G, ctx, playerID}, characterId) => {
-          console.log(G, ctx, playerID)
-          G.players[playerID] = JSON.parse(JSON.stringify(new Player(playerID, characterId)));
+        chooseCharacter: ({ G, playerID }, characterId) => {
+          const player = new Player(playerID!, characterId);
+          G.players[playerID] = instanceToPlain(player);
         },
       },
     },
@@ -36,7 +37,7 @@ export const Betrayal: typeof BetrayalGame = {
       next: 'hauntSetup',
       endIf: ({ G }) => G.haunt !== undefined,
       moves: {
-        
+
       }
     },
     hauntSetup: {

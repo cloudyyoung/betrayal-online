@@ -6,10 +6,10 @@ export class Player {
     character: PlayableCharacter
     team: PlayerTeam
 
-    private _mightIndex: CharacterTraitScaleIndex;
-    private _speedIndex: CharacterTraitScaleIndex;
-    private _sanityIndex: CharacterTraitScaleIndex;
-    private _knowledgeIndex: CharacterTraitScaleIndex;
+    mightIndex: CharacterTraitScaleIndex;
+    speedIndex: CharacterTraitScaleIndex;
+    sanityIndex: CharacterTraitScaleIndex;
+    knowledgeIndex: CharacterTraitScaleIndex;
 
     constructor(id: string, characterId: PlayableCharacterId) {
         const character = getCharacterById(characterId);
@@ -22,10 +22,10 @@ export class Player {
         this.character = character;
         this.team = 'NEUTRAL';
 
-        this._mightIndex = character.startingMightIndex;
-        this._speedIndex = character.startingSpeedIndex;
-        this._sanityIndex = character.startingSanityIndex;
-        this._knowledgeIndex = character.startingKnowledgeIndex;
+        this.mightIndex = character.startingMightIndex;
+        this.speedIndex = character.startingSpeedIndex;
+        this.sanityIndex = character.startingSanityIndex;
+        this.knowledgeIndex = character.startingKnowledgeIndex;
     }
 
     get characterId() {
@@ -33,86 +33,54 @@ export class Player {
     }
 
     get might() {
-        return this.character.mightScale[this._mightIndex]
+        return this.character.mightScale[this.mightIndex]
     }
 
     get speed() {
-        return this.character.speedScale[this._speedIndex]
+        return this.character.speedScale[this.speedIndex]
     }
 
     get sanity() {
-        return this.character.sanityScale[this._sanityIndex]
+        return this.character.sanityScale[this.sanityIndex]
     }
 
     get knowledge() {
-        return this.character.knowledgeScale[this._knowledgeIndex]
-    }
-
-    get mightIndex() {
-        return this._mightIndex
-    }
-
-    get speedIndex() {
-        return this._speedIndex
-    }
-
-    get sanityIndex() {
-        return this._sanityIndex
-    }
-
-    get knowledgeIndex() {
-        return this._knowledgeIndex
-    }
-
-    set mightIndex(index: number) {
-        this._mightIndex = clampTraitScaleIndex(index)
-    }
-
-    set speedIndex(index: number) {
-        this._speedIndex = clampTraitScaleIndex(index)
-    }
-
-    set sanityIndex(index: number) {
-        this._sanityIndex = clampTraitScaleIndex(index)
-    }
-
-    set knowledgeIndex(index: number) {
-        this._knowledgeIndex = clampTraitScaleIndex(index)
+        return this.character.knowledgeScale[this.knowledgeIndex]
     }
 
     public updateTraits({ mightDelta, speedDelta, sanityDelta, knowledgeDelta }: Partial<{ mightDelta: number | undefined, speedDelta: number | undefined, sanityDelta: number | undefined, knowledgeDelta: number | undefined }>) {
         if (mightDelta !== undefined) {
-            this.mightIndex += mightDelta
+            this.mightIndex += clampTraitScaleIndex(mightDelta)
         }
         if (speedDelta !== undefined) {
-            this.speedIndex += speedDelta
+            this.speedIndex += clampTraitScaleIndex(speedDelta)
         }
         if (sanityDelta !== undefined) {
-            this.sanityIndex += sanityDelta
+            this.sanityIndex += clampTraitScaleIndex(sanityDelta)
         }
         if (knowledgeDelta !== undefined) {
-            this.knowledgeIndex += knowledgeDelta
+            this.knowledgeIndex += clampTraitScaleIndex(knowledgeDelta)
         }
     }
 
     get isMightCritical() {
-        return this._mightIndex === 1
+        return this.mightIndex === 1
     }
 
     get isSpeedCritical() {
-        return this._speedIndex === 1
+        return this.speedIndex === 1
     }
 
     get isSanityCritical() {
-        return this._sanityIndex === 1
+        return this.sanityIndex === 1
     }
 
     get isKnowledgeCritical() {
-        return this._knowledgeIndex === 1
+        return this.knowledgeIndex === 1
     }
 
     get isDead() {
-        return this._mightIndex === 0 || this._sanityIndex === 0 || this._speedIndex === 0 || this._knowledgeIndex === 0
+        return this.mightIndex === 0 || this.sanityIndex === 0 || this.speedIndex === 0 || this.knowledgeIndex === 0
     }
 }
 
