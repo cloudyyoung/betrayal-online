@@ -1,6 +1,4 @@
-import { LobbyAPI } from 'boardgame.io';
 import { LobbyClient } from 'boardgame.io/client';
-import { useEffect, useState } from 'react';
 import { Button } from './components/button';
 
 const lobbyClient = new LobbyClient({
@@ -8,22 +6,12 @@ const lobbyClient = new LobbyClient({
 });
 
 const BetrayalLobby = () => {
-    const [matchList, setMatchList] = useState<LobbyAPI.MatchList>({ matches: [] });
-
-    useEffect(() => {
-        document.title = "Lobby - Betrayal Online";
-        (async () => {
-            const matchList = await lobbyClient.listMatches('betrayal-at-the-house-on-the-hill');
-            setMatchList(matchList);
-        })();
-    }, [])
 
     const createMatch = async () => {
         await lobbyClient.createMatch('betrayal-at-the-house-on-the-hill', {
             numPlayers: 6,
         });
         const matchList = await lobbyClient.listMatches('betrayal-at-the-house-on-the-hill');
-        setMatchList(matchList);
     }
 
     const joinMatch = async (matchID: string) => {
@@ -34,34 +22,26 @@ const BetrayalLobby = () => {
     }
 
     return (
-        <div className='relative min-h-screen flex flex-col items-center py-8'>
-            <img
-                className='absolute inset-0 -z-10 w-full h-full object-cover'
-                src="/bg-light.png"
-                alt="background"
-            />
-            <img
-                className='h-40 relative z-10'
-                src="/betrayal_logo.png"
-                alt="logo"
-            />
-            <div className='text-zinc-950 w-xl relative z-10'>
-                This online version of Betrayal at the House on the Hill (3rd Edition) is an unofficial, fan-made project created solely for personal entertainment and educational purposes.
-                All rights to Betrayal at the House on the Hill, including its game mechanics, artwork, trademarks, and intellectual property, are owned by Avalon Hill and Hasbro, Inc.
-                This project is not affiliated with, endorsed by, or supported by Avalon Hill, Hasbro, or any of their subsidiaries or partners.
-                No copyright or trademark infringement is intended.
-                Players are encouraged to support the official release by purchasing the physical game through authorized retailers.
-            </div>
-            <h1 className='relative z-10'>Lobby</h1>
-            <div className='relative z-10'>
-                {matchList.matches.map((match) => (
-                    <div key={match.matchID} className="border border-zinc-700 rounded p-4 mb-4">
-                        <div>Match ID: {match.matchID}</div>
-                        <div>Players: {match.players.length} / 6</div>
+        <div className='h-screen bg-[url("/bg-light-big.webp")] bg-repeat bg-cover bg-center overflow-hidden'>
+            <div className='relative h-screen max-w-2xl mx-auto p-4 gap-8'>
+                <div className='flex flex-col items-center justify-center h-screen p-4 gap-4'>
+                    <img
+                        className='w-full'
+                        src="/betrayal_logo.png"
+                        alt="logo"
+                    />
+                    <div className='space-x-4'>
+                        <Button className='bg-yellow-700 text-white font-tomarik-brush text-xl px-6 py-4 hover:bg-yellow-600'>Create New Game</Button>
+                        <Button className='bg-white/80 text-amber-700 font-tomarik-brush text-xl px-6 py-4 hover:bg-white/100'>Join Existing</Button>
                     </div>
-                ))}
+                </div>
+                <div className='text-zinc-700 italic text-xs tracking-tighter leading-3 sticky bottom-0 left-0 right-0'>
+                    Disclaimer: This is an unofficial, fan-made version of Betrayal at the House on the Hill (3rd Edition), created for personal and educational use only.
+                    All rights belong to Avalon Hill and Hasbro, Inc.
+                    This project is not affiliated with or endorsed by either company.
+                    Please support the official release by purchasing the game through authorized retailers.
+                </div>
             </div>
-            <Button className='relative z-10'>Create match</Button>
         </div>
     )
 }
