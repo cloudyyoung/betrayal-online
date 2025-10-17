@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:server": "tsc --project tsconfig.server.json",
+    "serve": "npm run build:server && node --loader ./loader.mjs dist/server.js",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "jest",
@@ -13,9 +15,11 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
+    "@types/koa": "^3.0.0",
     "boardgame.io": "^0.50.2",
     "class-transformer": "^0.5.1",
     "clsx": "^2.1.1",
+    "koa": "^3.0.2",
     "luxon": "^3.7.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
@@ -44,6 +48,7 @@
     "tailwindcss": "^4.1.14",
     "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "vite": "^7.1.7"
   }
