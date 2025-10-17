@@ -3,10 +3,10 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
 import './index.css'
-import BetrayalLobby from './lobby.tsx'
+import BetrayalCover from './cover.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BetrayalLobby />
+    <BetrayalCover />
   </StrictMode>,
 )

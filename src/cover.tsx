@@ -5,7 +5,7 @@ const lobbyClient = new LobbyClient({
     server: `http://${window.location.hostname}:8000`,
 });
 
-const BetrayalLobby = () => {
+const BetrayalCover = () => {
 
     const createMatch = async () => {
         await lobbyClient.createMatch('betrayal-at-the-house-on-the-hill', {
@@ -46,4 +46,4 @@ const BetrayalLobby = () => {
     )
 }
 
-export default BetrayalLobby
+export default BetrayalCover
