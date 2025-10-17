@@ -1,8 +1,11 @@
-import { PlayableCharacter, CharacterTraitScaleIndex, getCharacterById, type PlayableCharacterId } from './character';
+import { Exclude, Expose } from 'class-transformer';
+import { type PlayableCharacter, CharacterTraitScaleIndex, getCharacterById, type PlayableCharacterId } from './character';
 import { PlayerTeam } from "./types";
 
 export class Player {
     id: string;
+
+    @Exclude()
     character: PlayableCharacter
     team: PlayerTeam
 
@@ -28,22 +31,27 @@ export class Player {
         this.knowledgeIndex = character.startingKnowledgeIndex;
     }
 
+    @Expose()
     get characterId() {
         return this.character.id
     }
 
+    @Expose()
     get might() {
         return this.character.mightScale[this.mightIndex]
     }
 
+    @Expose()
     get speed() {
         return this.character.speedScale[this.speedIndex]
     }
 
+    @Expose()
     get sanity() {
         return this.character.sanityScale[this.sanityIndex]
     }
 
+    @Expose()
     get knowledge() {
         return this.character.knowledgeScale[this.knowledgeIndex]
     }
@@ -63,22 +71,27 @@ export class Player {
         }
     }
 
+    @Expose()
     get isMightCritical() {
         return this.mightIndex === 1
     }
 
+    @Expose()
     get isSpeedCritical() {
         return this.speedIndex === 1
     }
 
+    @Expose()
     get isSanityCritical() {
         return this.sanityIndex === 1
     }
 
+    @Expose()
     get isKnowledgeCritical() {
         return this.knowledgeIndex === 1
     }
 
+    @Expose()
     get isDead() {
         return this.mightIndex === 0 || this.sanityIndex === 0 || this.speedIndex === 0 || this.knowledgeIndex === 0
     }
