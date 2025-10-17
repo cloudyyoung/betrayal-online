@@ -6,12 +6,14 @@ const getPortraitUrl = (id: string) => `/character-boards/${id}.png`;
 export interface CharacterCardProps {
     character: PlayableCharacter
     selected?: boolean;
+    disabled?: boolean;
     onClick?: () => void;
 }
 
 export function CharacterCard({
     character,
     selected = false,
+    disabled = false,
     onClick,
 }: CharacterCardProps) {
     const { name } = character;
@@ -25,6 +27,7 @@ export function CharacterCard({
                 'hover:ring-4 hover:ring-pink-400',
                 selected && 'ring-4 bg-pink-400',
             )}
+            disabled={disabled}
             onClick={onClick}
         >
             <div className="rounded overflow-hidden mb-4 flex items-center justify-center">
