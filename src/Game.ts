@@ -1,5 +1,5 @@
 import { ActivePlayers } from 'boardgame.io/core';
-import { instanceToPlain, plainToInstance } from 'class-transformer';
+import { instanceToPlain } from 'class-transformer';
 
 import type { BetrayalGame } from "./logic/types";
 import { Player } from './logic/player';
@@ -28,10 +28,9 @@ export const Betrayal: typeof BetrayalGame = {
           const player = new Player({ id: playerID, characterId });
           const plain = instanceToPlain(player)
           G.players[playerID] = plain
-          const p = plainToInstance(Player, plain)
-          console.log(p)
         },
       },
+
     },
     scenarioSelection: {
       next: 'prehaunt',
