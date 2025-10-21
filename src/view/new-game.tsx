@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom'
 import { LobbyClient } from 'boardgame.io/client'
 import { Button } from '../components/button'
@@ -11,22 +12,23 @@ const lobbyClient = new LobbyClient({
 
 export default function NewGame() {
     const navigate = useNavigate()
-    const [playerName, setPlayerName] = useState('Player 1')
-    const [numPlayers, setNumPlayers] = useState<number>(4)
+    const { user } = useAuth0();
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
+
+    if (!user) return
 
     const onCreate = async () => {
         setError(null)
         setLoading(true)
         try {
             const { matchID } = await lobbyClient.createMatch(BETRAYAL_GAME_NAME, {
-                numPlayers,
+                numPlayers: 6,
             })
 
             const joinRes = await lobbyClient.joinMatch(BETRAYAL_GAME_NAME, matchID, {
                 playerID: '0',
-                playerName,
+                playerName: user.name || user.given_name || user.nickname || 'Player',
             }) as any
 
             const playerCredentials: string | undefined = joinRes?.playerCredentials
@@ -44,22 +46,12 @@ export default function NewGame() {
 
     return (
         <CoverContainer>
-            <h1 className='text-3xl font-tomarik-brush text-yellow-900 mb-6'>Create New Game</h1>
-
-            <div className='bg-white/85 rounded-lg shadow p-6 space-y-5'>
-                <div>
-                    <label className='block text-sm font-medium text-amber-900 mb-1'>Player name</label>
-                    <input
-                        className='w-full rounded border border-amber-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500'
-                        value={playerName}
-                        onChange={(e) => setPlayerName(e.target.value)}
-                        placeholder='Your name'
-                    />
-                </div>
+            <div className='bg-red-800/10 p-6 space-y-5'>
+                <h1 className='text-3xl font-tomarik-brush text-red-900/85 my-6'>Create New Game</h1>
 
                 <div>
                     <label className='block text-sm font-medium text-amber-900 mb-1'>Number of players</label>
-                    <select
+                    {/* <select
                         className='w-full rounded border border-amber-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500'
                         value={numPlayers}
                         onChange={(e) => setNumPlayers(Number(e.target.value))}
@@ -67,7 +59,7 @@ export default function NewGame() {
                         {[3, 4, 5, 6].map(n => (
                             <option key={n} value={n}>{n}</option>
                         ))}
-                    </select>
+                    </select> */}
                 </div>
 
                 {error && (
@@ -78,7 +70,7 @@ export default function NewGame() {
                     <Button
                         onClick={onCreate}
                         className='bg-yellow-700 text-white font-tomarik-brush text-lg px-6 py-3 hover:bg-yellow-600 disabled:opacity-50'
-                        disabled={loading || !playerName.trim()}
+                        disabled={loading}
                     >
                         {loading ? 'Creating…' : 'Create Game'}
                     </Button>
