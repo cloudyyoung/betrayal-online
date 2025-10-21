@@ -1,6 +1,7 @@
 import { LogoutOptions, useAuth0, User } from '@auth0/auth0-react';
 import { Button } from './components/button';
 import { NavigateFunction, useNavigate } from 'react-router-dom'
+import { CoverContainer } from './components/cover-container';
 
 const BetrayalCover = () => {
     const navigate = useNavigate();
@@ -16,31 +17,27 @@ const BetrayalCover = () => {
     };
 
     return (
-        <div className='h-screen overflow-hidden bg-zinc-950'>
-            <div className='fixed top-0 left-0 right-0 bottom-0 bg-[url("/bg-light.jpg")] bg-repeat bg-cover bg-center'></div>
-            <div className='fixed top-0 left-0 right-0 bottom-0 bg-[url("/bg-light-big.jpg")] bg-repeat bg-cover bg-center'></div>
-            <div className='relative h-screen max-w-2xl mx-auto gap-8 px-6'>
-                <div className='flex flex-col justify-center items-center h-screen gap-4 -mt-8'>
-                    <img
-                        className='w-xs -ml-1.5 sm:w-10/12 sm:ml-0'
-                        src="/betrayal-logo-cropped.png"
-                        alt="logo"
-                    />
-                    <div className='font-tomarik-brush text-yellow-900 text-center text-md sm:text-2xl'>
-                        Unofficial, scripted online web version
-                    </div>
-                    {isAuthenticated && !isLoading && user && <AuthenticatedButtons user={user} logout={logout} navigate={navigate} />}
-                    {!isAuthenticated && !isLoading && <UnauthenticatedButtons handleSocialLogin={handleSocialLogin} />}
-                    {isLoading && <div className='text-yellow-900 text-lg font-tomarik-brush'>Loading...</div>}
+        <CoverContainer>
+            <div className='flex flex-col justify-center items-center h-screen gap-4 -mt-8'>
+                <img
+                    className='w-xs -ml-1.5 sm:w-10/12 sm:ml-0'
+                    src="/betrayal-logo-cropped.png"
+                    alt="logo"
+                />
+                <div className='font-tomarik-brush text-yellow-900 text-center text-md sm:text-2xl'>
+                    Unofficial, scripted online web version
                 </div>
-                <div className='text-zinc-700 italic text-xs tracking-tighter leading-3 sticky bottom-0 left-0 right-0 pb-6 sm:pb-4'>
-                    Disclaimer: This is an unofficial, fan-made version of Betrayal at the House on the Hill (3rd Edition), created for personal and educational use only.
-                    All rights belong to Avalon Hill and Hasbro, Inc.
-                    This project is not affiliated with or endorsed by either company.
-                    Please support the official release by purchasing the game through authorized retailers.
-                </div>
+                {isAuthenticated && !isLoading && user && <AuthenticatedButtons user={user} logout={logout} navigate={navigate} />}
+                {!isAuthenticated && !isLoading && <UnauthenticatedButtons handleSocialLogin={handleSocialLogin} />}
+                {isLoading && <div className='text-yellow-900 text-lg font-tomarik-brush'>Loading...</div>}
             </div>
-        </div>
+            <div className='text-zinc-700 italic text-xs tracking-tighter leading-3 sticky bottom-0 left-0 right-0 pb-6 sm:pb-4'>
+                Disclaimer: This is an unofficial, fan-made version of Betrayal at the House on the Hill (3rd Edition), created for personal and educational use only.
+                All rights belong to Avalon Hill and Hasbro, Inc.
+                This project is not affiliated with or endorsed by either company.
+                Please support the official release by purchasing the game through authorized retailers.
+            </div>
+        </CoverContainer>
     )
 }
 
