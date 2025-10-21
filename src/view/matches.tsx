@@ -58,9 +58,6 @@ export default function MatchesList() {
 
     return (
         <div className='min-h-screen bg-[url("/bg-light-big.webp")] bg-repeat bg-cover bg-center'>
-            <div className='absolute top-6 right-6 z-10'>
-                <UserProfile />
-            </div>
             <div className='max-w-3xl mx-auto px-6 py-10'>
                 <div className='flex items-center justify-between mb-6'>
                     <h1 className='text-3xl font-tomarik-brush text-yellow-900'>Available Matches</h1>

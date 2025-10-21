@@ -6,7 +6,7 @@ export const auth0Config = {
     domain: 'cloudyyoung.auth0.com',
     clientId: 'bRRsWWsltUM6Czuus0TP6gH6vu88ebx8',
     authorizationParams: {
-        redirect_uri: window.location.origin + '/callback',
+        redirect_uri: window.location.origin,
     },
     // Cache location for token storage
     cacheLocation: 'localstorage' as const,

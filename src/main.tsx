@@ -9,7 +9,6 @@ import BetrayalClient from './client'
 import NewGame from './view/new-game'
 import MatchesList from './view/matches'
 import JoinMatch from './view/join-match'
-import Callback from './view/callback'
 import { ProtectedRoute } from './auth/protected-route'
 import { auth0Config } from './auth/auth0-config'
 
@@ -27,7 +26,6 @@ createRoot(document.getElementById('root')!).render(
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
             <Route path="/" element={<BetrayalCover />} />
-            <Route path="/callback" element={<Callback />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/new" element={<NewGame />} />
               <Route path="/matches" element={<MatchesList />} />

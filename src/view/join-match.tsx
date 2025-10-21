@@ -66,9 +66,6 @@ export default function JoinMatch() {
 
     return (
         <div className='min-h-screen bg-[url("/bg-light-big.webp")] bg-repeat bg-cover bg-center'>
-            <div className='absolute top-6 right-6 z-10'>
-                <UserProfile />
-            </div>
             <div className='max-w-xl mx-auto px-6 py-10'>
                 <h1 className='text-3xl font-tomarik-brush text-yellow-900 mb-6'>Join Game</h1>
 

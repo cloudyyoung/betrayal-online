@@ -1,10 +1,9 @@
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAuth0, User } from '@auth0/auth0-react';
 import { Button } from './components/button';
 import { Link } from 'react-router-dom'
-import UserProfile from './components/user-profile';
 
 const BetrayalCover = () => {
-    const { isAuthenticated, isLoading, loginWithRedirect } = useAuth0();
+    const { isAuthenticated, isLoading, loginWithRedirect, user, logout } = useAuth0();
 
     const handleSocialLogin = (connection: string) => {
         loginWithRedirect({
@@ -15,26 +14,26 @@ const BetrayalCover = () => {
     };
 
     return (
-        <div className='h-screen bg-[url("/bg-light-big.webp")] bg-repeat bg-cover bg-center overflow-hidden'>
-            <div className='absolute top-6 right-6 z-10'>
-                <UserProfile />
-            </div>
+        <div className='h-screen overflow-hidden bg-zinc-950'>
+            <div className='fixed top-0 left-0 right-0 bottom-0 bg-[url("/bg-light.jpg")] bg-repeat bg-cover bg-center'></div>
+            <div className='fixed top-0 left-0 right-0 bottom-0 bg-[url("/bg-light-big.jpg")] bg-repeat bg-cover bg-center'></div>
             <div className='relative h-screen max-w-2xl mx-auto gap-8 px-6'>
-                <div className='flex flex-col justify-center items-start sm:items-center h-screen gap-4 -mt-8'>
+                <div className='flex flex-col justify-center items-center h-screen gap-4 -mt-8'>
                     <img
                         className='w-xs -ml-1.5 sm:w-10/12 sm:ml-0'
                         src="/betrayal-logo-cropped.png"
                         alt="logo"
                     />
-                    <div className='font-tomarik-brush text-yellow-900 text-lg sm:text-2xl'>
+                    <div className='font-tomarik-brush text-yellow-900 text-center text-md sm:text-2xl'>
                         Unofficial, scripted online web version
                     </div>
-                    <div className='flex flex-row gap-4 mt-6'>
-                        {isAuthenticated && <AuthenticatedButtons />}
+                    <div>
+                        {isAuthenticated && !isLoading && user && <AuthenticatedButtons user={user} logout={logout} />}
                         {!isAuthenticated && !isLoading && <UnauthenticatedButtons handleSocialLogin={handleSocialLogin} />}
+                        {isLoading && <div className='text-yellow-900 text-lg font-tomarik-brush'>Loading...</div>}
                     </div>
                 </div>
-                <div className='text-zinc-700 italic text-xs tracking-tighter leading-3 sticky bottom-0 left-0 right-0 pb-6'>
+                <div className='text-zinc-700 italic text-xs tracking-tighter leading-3 sticky bottom-0 left-0 right-0 pb-6 sm:pb-4'>
                     Disclaimer: This is an unofficial, fan-made version of Betrayal at the House on the Hill (3rd Edition), created for personal and educational use only.
                     All rights belong to Avalon Hill and Hasbro, Inc.
                     This project is not affiliated with or endorsed by either company.
@@ -47,20 +46,43 @@ const BetrayalCover = () => {
 
 export default BetrayalCover
 
-const AuthenticatedButtons = () => (
-    <>
-        <Link to="/new">
-            <Button className='bg-yellow-700 text-white font-tomarik-brush sm:text-xl px-6 py-4 hover:bg-yellow-600'>Create New Game</Button>
-        </Link>
-        <Link to="/matches">
-            <Button className='bg-white/80 text-amber-700 font-tomarik-brush sm:text-xl px-6 py-4 hover:bg-white/100'>Join Existing</Button>
-        </Link>
-    </>
+const AuthenticatedButtons = ({ user, logout }: { user: User, logout: () => void }) => (
+    <div className='flex flex-col gap-4 sm:gap-6 justify-center items-center'>
+        <div className='flex flex-row gap-4 w-full'>
+            <Link to="/new">
+                <Button className='bg-yellow-700 text-white font-tomarik-brush sm:text-xl px-6 py-4 hover:bg-yellow-600'>Create New Game</Button>
+            </Link>
+            <Link to="/matches">
+                <Button className='bg-white/80 text-amber-700 font-tomarik-brush sm:text-xl px-6 py-4 hover:bg-white/100'>Join Existing</Button>
+            </Link>
+        </div>
+        <div className='flex flex-row gap-2 justify-center items-center w-full'>
+            <div>
+                <img
+                    src={user.picture}
+                    alt={user.name}
+                    className="w-10 h-10 rounded-full border-2 border-yellow-700"
+                />
+            </div>
+            <div className='flex flex-col grow'>
+                <p className="text-sm font-bold text-gray-900">{user.name}</p>
+                <p className="text-xs text-gray-500 truncate">{user.email}</p>
+            </div>
+            <div>
+                <Button
+                    className='text-zinc-700 font-tomarik-brush text-xs sm:text-sm px-4 py-2 hover:bg-zinc-200'
+                    onClick={logout}
+                >
+                    Sign Out
+                </Button>
+            </div>
+        </div>
+    </div>
 )
 
 const UnauthenticatedButtons = ({ handleSocialLogin }: { handleSocialLogin: (connection: string) => void }) => {
     return (
-        <>
+        <div className='flex flex-col gap-4 mt-6'>
 
             {/* Sign in with Google */}
             <Button
@@ -109,6 +131,6 @@ const UnauthenticatedButtons = ({ handleSocialLogin }: { handleSocialLogin: (con
                 </svg>
                 Sign in with Microsoft
             </Button>
-        </>
+        </div>
     )
 }
