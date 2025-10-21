@@ -8,7 +8,7 @@ import BetrayalCover from './cover'
 import BetrayalClient from './client'
 import NewGame from './view/new-game'
 import MatchesList from './view/matches'
-import JoinMatch from './view/join-match'
+import JoinMatch from './view/match'
 import { ProtectedRoute } from './auth/protected-route'
 import { auth0Config } from './auth/auth0-config'
 
