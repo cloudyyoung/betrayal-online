@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { LobbyClient } from 'boardgame.io/client'
 import { Button } from '../components/button'
 import { BETRAYAL_GAME_NAME } from '../game'
+import UserProfile from '../components/user-profile'
 
 const lobbyClient = new LobbyClient({
     server: `http://${window.location.hostname}:8000`,
@@ -43,6 +44,9 @@ export default function NewGame() {
 
     return (
         <div className='min-h-screen bg-[url("/bg-light-big.webp")] bg-repeat bg-cover bg-center'>
+            <div className='absolute top-6 right-6 z-10'>
+                <UserProfile />
+            </div>
             <div className='max-w-xl mx-auto px-6 py-10'>
                 <h1 className='text-3xl font-tomarik-brush text-yellow-900 mb-6'>Create New Game</h1>
 
