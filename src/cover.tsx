@@ -1,27 +1,7 @@
-import { LobbyClient } from 'boardgame.io/client';
 import { Button } from './components/button';
 import { Link } from 'react-router-dom'
 
-const lobbyClient = new LobbyClient({
-    server: `http://${window.location.hostname}:8000`,
-});
-
 const BetrayalCover = () => {
-
-    const createMatch = async () => {
-        await lobbyClient.createMatch('betrayal-at-the-house-on-the-hill', {
-            numPlayers: 6,
-        });
-        const matchList = await lobbyClient.listMatches('betrayal-at-the-house-on-the-hill');
-    }
-
-    const joinMatch = async (matchID: string) => {
-        await lobbyClient.joinMatch('betrayal-at-the-house-on-the-hill', matchID, {
-            playerID: '00',
-            playerName: 'Player 1',
-        });
-    }
-
     return (
         <div className='h-screen bg-[url("/bg-light-big.webp")] bg-repeat bg-cover bg-center overflow-hidden'>
             <div className='relative h-screen max-w-2xl mx-auto gap-8 px-6'>
@@ -35,10 +15,10 @@ const BetrayalCover = () => {
                         Unofficial, scripted online web version
                     </div>
                     <div className='flex flex-row gap-4 mt-6'>
-                        <Link to="/play">
+                        <Link to="/new">
                             <Button className='bg-yellow-700 text-white font-tomarik-brush sm:text-xl px-6 py-4 hover:bg-yellow-600'>Create New Game</Button>
                         </Link>
-                        <Link to="/play">
+                        <Link to="/matches">
                             <Button className='bg-white/80 text-amber-700 font-tomarik-brush sm:text-xl px-6 py-4 hover:bg-white/100'>Join Existing</Button>
                         </Link>
                     </div>

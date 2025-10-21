@@ -4,9 +4,11 @@ import { instanceToPlain } from 'class-transformer';
 import type { BetrayalGame } from "./logic/types";
 import { Player } from './logic/player';
 
+export const BETRAYAL_GAME_NAME = "betrayal-at-the-house-on-the-hill-3rd-edition" as const;
+
 
 export const Betrayal: typeof BetrayalGame = {
-  name: "betrayal-at-the-house-on-the-hill-3rd-edition",
+  name: BETRAYAL_GAME_NAME,
 
   setup: (_, __) => {
     return { scenarioCard: undefined, players: {}, haunt: undefined };
