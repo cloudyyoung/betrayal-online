@@ -4,7 +4,6 @@ import { LobbyClient } from 'boardgame.io/client'
 import type { LobbyAPI } from 'boardgame.io'
 import { Button } from '../components/button'
 import { BETRAYAL_GAME_NAME } from '../game'
-import UserProfile from '../components/user-profile'
 
 const lobbyClient = new LobbyClient({
     server: `http://${window.location.hostname}:8000`,

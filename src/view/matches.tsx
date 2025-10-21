@@ -4,7 +4,6 @@ import { LobbyAPI } from 'boardgame.io'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../components/button'
 import { BETRAYAL_GAME_NAME } from '../game'
-import UserProfile from '../components/user-profile'
 
 const lobbyClient = new LobbyClient({
     server: `http://${window.location.hostname}:8000`,
