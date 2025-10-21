@@ -54,11 +54,11 @@ const AuthenticatedButtons = (
     }
 ) => {
     const onCreateNewGame = () => {
-        navigate('/new');
+        navigate('/games/new');
     }
 
     const onJoinExisting = () => {
-        navigate('/join');
+        navigate('/games');
     }
 
     return (

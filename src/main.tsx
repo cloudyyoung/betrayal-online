@@ -27,10 +27,10 @@ createRoot(document.getElementById('root')!).render(
           <Routes>
             <Route path="/" element={<BetrayalCover />} />
             <Route element={<ProtectedRoute />}>
-              <Route path="/new" element={<NewGame />} />
-              <Route path="/matches" element={<MatchesList />} />
-              <Route path="/join/:matchID" element={<JoinMatch />} />
-              <Route path="/play" element={<BetrayalClient />} />
+              <Route path="/games/new" element={<NewGame />} />
+              <Route path="/games" element={<MatchesList />} />
+              <Route path="/games/:matchID" element={<JoinMatch />} />
+              <Route path="/games/:matchID/board" element={<BetrayalClient />} />
             </Route>
           </Routes>
         </Suspense>
