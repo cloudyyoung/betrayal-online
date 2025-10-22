@@ -11,7 +11,7 @@ export const getAuth0UserMetadata = async (token: string, userSub: string) => {
 };
 
 
-export const updateAuth0UserMetadata = async (token: string, userSub: string, matchID: string, credentials: string) => {
+export const updateAuth0UserMetadata = async (token: string, userSub: string, matchID: string, playerID: string, credentials: string) => {
     const res = await fetch(`https://cloudyyoung.auth0.com/api/v2/users/${encodeURIComponent(userSub)}`, {
         method: 'PATCH',
         headers: {
@@ -20,7 +20,10 @@ export const updateAuth0UserMetadata = async (token: string, userSub: string, ma
         },
         body: JSON.stringify({
             user_metadata: {
-                [matchID]: credentials
+                [matchID]: {
+                    playerID,
+                    credentials
+                }
             }
         })
     });

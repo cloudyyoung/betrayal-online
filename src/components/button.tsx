@@ -9,7 +9,7 @@ export const Button = ({ className, children, ...props }: ButtonProps) => {
     // Focus
     'focus:outline-none data-[focus]:outline data-[focus]:outline-2 data-[focus]:outline-offset-2 data-[focus]:outline-blue-500',
     // Disabled
-    'data-[disabled]:opacity-50',
+    'data-[disabled]:opacity-50 disabled:cursor-not-allowed',
     // Cursor
     'cursor-pointer',
     // Transition

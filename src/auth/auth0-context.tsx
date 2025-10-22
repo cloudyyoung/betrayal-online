@@ -7,7 +7,7 @@ interface Auth0ContextType {
     userMetadata: any;
     isLoadingMetadata: boolean;
     refreshMetadata: () => Promise<void>;
-    updateMetadata: (matchID: string, credentials: string) => Promise<void>;
+    updateMetadata: (matchID: string, playerID: string, credentials: string) => Promise<void>;
 }
 
 const Auth0Context = createContext<Auth0ContextType | undefined>(undefined);
@@ -47,7 +47,7 @@ export const Auth0ContextProvider = ({ children }: { children: ReactNode }) => {
         await loadTokenAndMetadata();
     };
 
-    const updateMetadata = async (matchID: string, credentials: string) => {
+    const updateMetadata = async (matchID: string, playerID: string, credentials: string) => {
         if (!accessToken || !user?.sub) {
             throw new Error('Not authenticated');
         }
@@ -57,6 +57,7 @@ export const Auth0ContextProvider = ({ children }: { children: ReactNode }) => {
                 accessToken,
                 user.sub,
                 matchID,
+                playerID,
                 credentials
             );
             setUserMetadata(updatedMetadata);

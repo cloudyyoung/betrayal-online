@@ -20,6 +20,7 @@ export default function Match() {
 
     const occupied = useMemo(() => match?.players.filter(p => p.name).length ?? 0, [match])
     const capacity = useMemo(() => match?.players.length ?? 0, [match])
+    const isFull = occupied >= capacity
 
     if (!matchID) return
     if (!user) return
@@ -68,7 +69,7 @@ export default function Match() {
 
                         <div className='pt-2'>
                             {!joinedMatch && <NotJoinedMatchButtons matchID={matchID} />}
-                            {joinedMatch && <JoinedMatchButtons matchID={matchID} />}
+                            {joinedMatch && <JoinedMatchButtons matchID={matchID} isFull={isFull} />}
                         </div>
                     </div>
                 )}
@@ -84,15 +85,16 @@ const NotJoinedMatchButtons = ({ matchID }: { matchID: string }) => {
     if (!user) return null;
 
     const onJoin = async () => {
-        const joinRes = await lobbyClient.joinMatch(BETRAYAL_GAME_NAME, matchID, {
+        const res = await lobbyClient.joinMatch(BETRAYAL_GAME_NAME, matchID, {
             playerName: user.name || user.given_name || user.nickname || 'Player',
             data: {
                 sub: user.sub,
                 picture: user.picture,
             },
         })
-        const credentials = joinRes.playerCredentials
-        await updateMetadata(matchID, credentials);
+        const playerID = res.playerID
+        const credentials = res.playerCredentials
+        await updateMetadata(matchID, playerID, credentials);
     }
 
     return (
@@ -107,18 +109,41 @@ const NotJoinedMatchButtons = ({ matchID }: { matchID: string }) => {
     )
 }
 
-const JoinedMatchButtons = ({ matchID }: { matchID: string }) => {
+const JoinedMatchButtons = ({ matchID, isFull }: { matchID: string; isFull: boolean }) => {
     const navigate = useNavigate();
+    const { userMetadata } = useAuth0Context()
+    const onGoToBoard = () => {
+        navigate(`/matches/${matchID}/board`);
+    }
+    const onLeaveMatch = async () => {
+        const playerID = userMetadata[matchID]?.playerID;
+        const credentials = userMetadata[matchID]?.credentials;
+        await lobbyClient.leaveMatch(BETRAYAL_GAME_NAME, matchID, {
+            playerID: playerID,
+            credentials: credentials,
+        });
+        navigate(`/matches/`);
+    }
 
     return (
-        <>
-            <Button
-                onClick={() => navigate(`/matches/${matchID}/board`)}
-                className='bg-green-700 text-white px-4 py-2 hover:bg-green-800 disabled:opacity-50'
-            >
-                Go to Board
-            </Button>
-        </>
+        <div className="flex flex-col gap-2">
+            {!isFull && <p className='text-orange-800/80'>Waiting for players...</p>}
+            <div className="flex flex-row gap-2">
+                <Button
+                    onClick={onGoToBoard}
+                    disabled={!isFull}
+                    className='bg-green-700 text-white px-4 py-2 hover:bg-green-800 disabled:opacity-50'
+                >
+                    Go to Board
+                </Button>
+                <Button
+                    onClick={onLeaveMatch}
+                    className='bg-yellow-700 text-white px-4 py-2 hover:bg-yellow-600'
+                >
+                    Leave Match
+                </Button>
+            </div>
+        </div>
     )
 }
 
