@@ -6,7 +6,6 @@ import { Auth0Provider } from '@auth0/auth0-react'
 
 import BetrayalCover from './cover'
 import BetrayalClient from './client'
-import NewGame from './view/new-game'
 import MatchesList from './view/matches'
 import JoinMatch from './view/match'
 import { ProtectedRoute } from './auth/protected-route'
@@ -27,7 +26,6 @@ createRoot(document.getElementById('root')!).render(
           <Routes>
             <Route path="/" element={<BetrayalCover />} />
             <Route element={<ProtectedRoute />}>
-              <Route path="/games/new" element={<NewGame />} />
               <Route path="/games" element={<MatchesList />} />
               <Route path="/games/:matchID" element={<JoinMatch />} />
               <Route path="/games/:matchID/board" element={<BetrayalClient />} />
