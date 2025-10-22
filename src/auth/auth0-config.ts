@@ -7,7 +7,8 @@ export const auth0Config = {
     clientId: 'bRRsWWsltUM6Czuus0TP6gH6vu88ebx8',
     authorizationParams: {
         redirect_uri: window.location.origin,
+        audience: `https://cloudyyoung.auth0.com/api/v2/`,
+        scope: `openid profile email read:current_user user_metadata update:current_user_metadata`
     },
-    // Cache location for token storage
     cacheLocation: 'localstorage' as const,
 };

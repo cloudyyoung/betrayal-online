@@ -2,71 +2,56 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { LobbyClient } from 'boardgame.io/client'
 import type { LobbyAPI } from 'boardgame.io'
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAuth0, User } from '@auth0/auth0-react';
 import { Button } from '../components/button'
 import { BETRAYAL_GAME_NAME } from '../game'
 import { CoverContainer } from '../components/cover-container'
+import { getAuth0UserMetadata, updateAuth0UserMetadata } from '../auth/auth0-metadata';
 
 const lobbyClient = new LobbyClient({
     server: `http://${window.location.hostname}:8000`,
 })
 
 export default function JoinMatch() {
-    const navigate = useNavigate()
-    const { user } = useAuth0()
+    const { user, getAccessTokenSilently } = useAuth0()
     const { matchID } = useParams<{ matchID: string }>()
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState<string | null>(null)
     const [match, setMatch] = useState<LobbyAPI.Match | null>(null)
+    const [userToken, setUserToken] = useState<string | null>(null)
+    const [userMetadata, setUserMetadata] = useState<any>(null)
 
     const occupied = useMemo(() => match?.players.filter(p => p.name).length ?? 0, [match])
     const capacity = useMemo(() => match?.players.length ?? 0, [match])
 
+    if (!matchID) return
+    if (!user) return
+
     const load = async () => {
-        if (!matchID) return
-        setLoading(true)
-        setError(null)
-        try {
-            const res = await lobbyClient.listMatches(BETRAYAL_GAME_NAME)
-            const found = res.matches.find(m => m.matchID === matchID) ?? null
-            setMatch(found)
-        } catch (e: any) {
-            setError(e?.message ?? 'Failed to load match')
-        } finally {
-            setLoading(false)
-        }
+        const token = await getAccessTokenSilently();
+        setUserToken(token);
+
+        const [match, userMetadata] = await Promise.all([
+            lobbyClient.getMatch(BETRAYAL_GAME_NAME, matchID),
+            getAuth0UserMetadata(token, user.sub!)
+        ])
+
+        setMatch(match);
+        setUserMetadata(userMetadata);
     }
 
-    useEffect(() => { load() /* eslint-disable-line react-hooks/exhaustive-deps */ }, [matchID])
+    useEffect(() => { load() }, [matchID])
 
-    const onJoin = async () => {
-        if (!match || !matchID) return
-        setError(null)
-        setLoading(true)
-        try {
-            const joinRes = await lobbyClient.joinMatch(BETRAYAL_GAME_NAME, matchID, {
-                playerID: user?.sub,
-                playerName: user?.name || user?.given_name || user?.nickname || 'Player',
-            }) as any
-            const credentials: string | undefined = joinRes?.playerCredentials
-            if (!credentials) throw new Error('Failed to get credentials')
-            navigate(`/matches/${matchID}/board`)
-        } catch (e: any) {
-            setError(e?.message ?? 'Failed to join match')
-        } finally {
-            setLoading(false)
-        }
-    }
+    const joinedMatch = useMemo(() => {
+        if (!userMetadata || !matchID) return false;
+        const savedMatch = userMetadata[matchID];
+        return !!savedMatch;
+    }, [userMetadata, matchID]);
 
     return (
         <CoverContainer>
             <div className='bg-red-800/10 p-6 space-y-5 my-12'>
                 <h1 className='text-3xl font-tomarik-brush text-red-900/85 mb-6'>Join Match</h1>
 
-                {error && <div className='text-sm text-red-700 mb-4'>{error}</div>}
-                {loading && <div className='text-amber-900 mb-4'>Loading…</div>}
-
-                {!match && !loading && (
+                {!match && (
                     <div className='bg-white/85 rounded-lg shadow p-6 text-amber-900'>Match not found.</div>
                 )}
 
@@ -87,11 +72,56 @@ export default function JoinMatch() {
                         </div>
 
                         <div className='pt-2'>
-                            <Button onClick={onJoin} disabled={loading} className='bg-yellow-700 text-white px-4 py-2 hover:bg-yellow-600 disabled:opacity-50'>Join Match</Button>
+                            {!joinedMatch && <NotJoinedMatchButtons matchID={matchID} token={userToken!} user={user} />}
+                            {joinedMatch && <JoinedMatchButtons matchID={matchID} />}
                         </div>
                     </div>
                 )}
             </div>
         </CoverContainer>
+    )
+}
+
+const NotJoinedMatchButtons = ({
+    matchID, token, user
+}: {
+    matchID: string, token: string, user: User
+}) => {
+    const onJoin = async () => {
+        const joinRes = await lobbyClient.joinMatch(BETRAYAL_GAME_NAME, matchID, {
+            playerName: user.name || user.given_name || user.nickname || 'Player',
+            data: {
+                sub: user.sub,
+                picture: user.picture,
+            },
+        })
+        const credentials = joinRes.playerCredentials
+        await updateAuth0UserMetadata(token, user.sub!, matchID, credentials);
+    }
+
+    return (
+        <>
+            <Button
+                onClick={onJoin}
+                className='bg-yellow-700 text-white px-4 py-2 hover:bg-yellow-600 disabled:opacity-50'
+            >
+                Join Match
+            </Button>
+        </>
+    )
+}
+
+const JoinedMatchButtons = ({ matchID }: { matchID: string }) => {
+    const navigate = useNavigate();
+
+    return (
+        <>
+            <Button
+                onClick={() => navigate(`/matches/${matchID}/board`)}
+                className='bg-green-700 text-white px-4 py-2 hover:bg-green-800 disabled:opacity-50'
+            >
+                Go to Board
+            </Button>
+        </>
     )
 }
