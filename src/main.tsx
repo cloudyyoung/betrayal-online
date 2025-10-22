@@ -10,6 +10,7 @@ import MatchesList from './view/matches'
 import JoinMatch from './view/match'
 import { ProtectedRoute } from './auth/protected-route'
 import { auth0Config } from './auth/auth0-config'
+import { Auth0ContextProvider } from './auth/auth0-context'
 
 import './index.css'
 
@@ -21,18 +22,20 @@ createRoot(document.getElementById('root')!).render(
       authorizationParams={auth0Config.authorizationParams}
       cacheLocation={auth0Config.cacheLocation}
     >
-      <BrowserRouter>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Routes>
-            <Route path="/" element={<BetrayalCover />} />
-            <Route element={<ProtectedRoute />}>
-              <Route path="/matches" element={<MatchesList />} />
-              <Route path="/matches/:matchID" element={<JoinMatch />} />
-              <Route path="/matches/:matchID/board" element={<BetrayalClient />} />
-            </Route>
-          </Routes>
-        </Suspense>
-      </BrowserRouter>
+      <Auth0ContextProvider>
+        <BrowserRouter>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Routes>
+              <Route path="/" element={<BetrayalCover />} />
+              <Route element={<ProtectedRoute />}>
+                <Route path="/matches" element={<MatchesList />} />
+                <Route path="/matches/:matchID" element={<JoinMatch />} />
+                <Route path="/matches/:matchID/board" element={<BetrayalClient />} />
+              </Route>
+            </Routes>
+          </Suspense>
+        </BrowserRouter>
+      </Auth0ContextProvider>
     </Auth0Provider>
   </StrictMode>,
 )

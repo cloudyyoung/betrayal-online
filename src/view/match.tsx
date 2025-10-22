@@ -6,18 +6,17 @@ import { useAuth0, User } from '@auth0/auth0-react';
 import { Button } from '../components/button'
 import { BETRAYAL_GAME_NAME } from '../game'
 import { CoverContainer } from '../components/cover-container'
-import { getAuth0UserMetadata, updateAuth0UserMetadata } from '../auth/auth0-metadata';
+import { useAuth0Context } from '../auth/auth0-context';
 
 const lobbyClient = new LobbyClient({
     server: `http://${window.location.hostname}:8000`,
 })
 
 export default function JoinMatch() {
-    const { user, getAccessTokenSilently } = useAuth0()
+    const { user } = useAuth0()
+    const { userMetadata } = useAuth0Context()
     const { matchID } = useParams<{ matchID: string }>()
     const [match, setMatch] = useState<LobbyAPI.Match | null>(null)
-    const [userToken, setUserToken] = useState<string | null>(null)
-    const [userMetadata, setUserMetadata] = useState<any>(null)
 
     const occupied = useMemo(() => match?.players.filter(p => p.name).length ?? 0, [match])
     const capacity = useMemo(() => match?.players.length ?? 0, [match])
@@ -26,16 +25,8 @@ export default function JoinMatch() {
     if (!user) return
 
     const load = async () => {
-        const token = await getAccessTokenSilently();
-        setUserToken(token);
-
-        const [match, userMetadata] = await Promise.all([
-            lobbyClient.getMatch(BETRAYAL_GAME_NAME, matchID),
-            getAuth0UserMetadata(token, user.sub!)
-        ])
-
+        const match = await lobbyClient.getMatch(BETRAYAL_GAME_NAME, matchID)
         setMatch(match);
-        setUserMetadata(userMetadata);
     }
 
     useEffect(() => { load() }, [matchID])
@@ -72,7 +63,7 @@ export default function JoinMatch() {
                         </div>
 
                         <div className='pt-2'>
-                            {!joinedMatch && <NotJoinedMatchButtons matchID={matchID} token={userToken!} user={user} />}
+                            {!joinedMatch && <NotJoinedMatchButtons matchID={matchID} />}
                             {joinedMatch && <JoinedMatchButtons matchID={matchID} />}
                         </div>
                     </div>
@@ -82,11 +73,12 @@ export default function JoinMatch() {
     )
 }
 
-const NotJoinedMatchButtons = ({
-    matchID, token, user
-}: {
-    matchID: string, token: string, user: User
-}) => {
+const NotJoinedMatchButtons = ({ matchID }: { matchID: string }) => {
+    const { user } = useAuth0();
+    const { updateMetadata } = useAuth0Context()
+
+    if (!user) return null;
+
     const onJoin = async () => {
         const joinRes = await lobbyClient.joinMatch(BETRAYAL_GAME_NAME, matchID, {
             playerName: user.name || user.given_name || user.nickname || 'Player',
@@ -96,7 +88,7 @@ const NotJoinedMatchButtons = ({
             },
         })
         const credentials = joinRes.playerCredentials
-        await updateAuth0UserMetadata(token, user.sub!, matchID, credentials);
+        await updateMetadata(matchID, credentials);
     }
 
     return (
