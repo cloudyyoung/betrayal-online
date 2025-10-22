@@ -50,7 +50,7 @@ export default function JoinMatch() {
             }) as any
             const credentials: string | undefined = joinRes?.playerCredentials
             if (!credentials) throw new Error('Failed to get credentials')
-            navigate(`/games/${matchID}/board`)
+            navigate(`/matches/${matchID}/board`)
         } catch (e: any) {
             setError(e?.message ?? 'Failed to join match')
         } finally {

@@ -62,11 +62,11 @@ const AuthenticatedButtons = (
             numPlayers: 6,
         })
 
-        navigate(`/games/${matchID}`);
+        navigate(`/matches/${matchID}`);
     }
 
     const onJoinExisting = () => {
-        navigate('/games');
+        navigate('/matches');
     }
 
     return (
