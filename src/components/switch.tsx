@@ -64,17 +64,17 @@ export function Switch({
         // Unchecked
         'bg-zinc-200 ring-1 ring-inset ring-black/5 dark:bg-white/5 dark:ring-white/15',
         // Checked
-        'data-[checked]:bg-[--switch-bg] data-[checked]:ring-[--switch-bg-ring] dark:data-[checked]:bg-[--switch-bg] dark:data-[checked]:ring-[--switch-bg-ring]',
+        'data-[checked]:bg-[var(--switch-bg)] data-[checked]:ring-[var(--switch-bg-ring)] dark:data-[checked]:bg-[var(--switch-bg)] dark:data-[checked]:ring-[var(--switch-bg-ring)]',
         // Focus
         'focus:outline-none data-[focus]:outline-2 data-[focus]:outline-offset-2 data-[focus]:outline-blue-500',
         // Hover
-        'data-[hover]:data-[checked]:ring-[--switch-bg-ring] data-[hover]:ring-black/15',
-        'dark:data-[hover]:data-[checked]:ring-[--switch-bg-ring] dark:data-[hover]:ring-white/25',
+        'data-[hover]:data-[checked]:ring-[var(--switch-bg-ring)] data-[hover]:ring-black/15',
+        'dark:data-[hover]:data-[checked]:ring-[var(--switch-bg-ring)] dark:data-[hover]:ring-white/25',
         // Disabled
         'data-[disabled]:bg-zinc-200 data-[disabled]:data-[checked]:bg-zinc-200 data-[disabled]:opacity-50 data-[disabled]:data-[checked]:ring-black/5',
         'dark:data-[disabled]:bg-white/15 dark:data-[disabled]:data-[checked]:bg-white/15 dark:data-[disabled]:data-[checked]:ring-white/15',
         // Color
-        '[--switch-bg-ring:theme(colors.orange.600/90%)] [--switch-bg:theme(colors.orange.500)] dark:[--switch-bg-ring:transparent]',
+        '[--switch-bg-ring:theme(colors.orange.600/90%)] [--switch-bg:theme(colors.orange.600)] dark:[--switch-bg-ring:transparent]',
         '[--switch:white] [--switch-ring:theme(colors.orange.600/90%)] [--switch-shadow:theme(colors.orange.900/20%)]',
       )}
     >

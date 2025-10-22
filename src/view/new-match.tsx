@@ -6,7 +6,6 @@ import { CoverContainer } from '../components/cover-container';
 import { BETRAYAL_GAME_NAME } from '../game';
 import clsx from 'clsx';
 import { Switch } from '../components/switch';
-import { Input } from '../components/input';
 
 const lobbyClient = new LobbyClient({
     server: `http://${window.location.hostname}:8000`,
@@ -15,8 +14,7 @@ const lobbyClient = new LobbyClient({
 export default function NewMatch() {
     const navigate = useNavigate();
     const [numPlayers, setNumPlayers] = useState<number>(6);
-    const [isPrivate, setIsPrivate] = useState<boolean>(false);
-    const [seed, setSeed] = useState<string>('');
+    const [isPrivate, setIsPrivate] = useState<boolean>(true);
     const [isCreating, setIsCreating] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -33,11 +31,6 @@ export default function NewMatch() {
             const setupData: any = {
                 numPlayers,
             };
-
-            // Add seed if provided
-            if (seed.trim()) {
-                setupData.setupData = { seed: seed.trim() };
-            }
 
             // Note: boardgame.io doesn't have built-in private match functionality
             // You may need to implement this on your server side
@@ -102,32 +95,18 @@ export default function NewMatch() {
                             <Switch
                                 id='isPrivate'
                                 checked={isPrivate}
+                                // disabled={true}
                                 onChange={(checked) => setIsPrivate(checked)}
                             />
-                            <label htmlFor='isPrivate' className='text-amber-900 font-medium'>
-                                Private Match
-                            </label>
+                            <div>
+                                <label htmlFor='isPrivate' className='text-amber-900 font-medium'>
+                                    Private Match
+                                </label>
+                                <p className='text-sm text-amber-800'>
+                                    Private matches won't appear in the public match list
+                                </p>
+                            </div>
                         </div>
-                        <p className='text-sm text-amber-800 ml-8'>
-                            Private matches won't appear in the public match list
-                        </p>
-                    </div>
-
-                    {/* Seed (Optional) */}
-                    <div className='space-y-2'>
-                        <label htmlFor='seed' className='block text-amber-900 font-medium'>
-                            Seed (Optional)
-                        </label>
-                        <Input
-                            id='seed'
-                            type='text'
-                            value={seed}
-                            onChange={(e) => setSeed(e.target.value)}
-                            placeholder='Leave empty for random'
-                        />
-                        <p className='text-sm text-amber-800'>
-                            Use a seed for reproducible game generation (advanced)
-                        </p>
                     </div>
                 </div>
 
