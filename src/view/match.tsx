@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { LobbyClient } from 'boardgame.io/client'
 import type { LobbyAPI } from 'boardgame.io'
-import { useAuth0, User } from '@auth0/auth0-react';
+import { useAuth0 } from '@auth0/auth0-react';
 import { Button } from '../components/button'
 import { BETRAYAL_GAME_NAME } from '../game'
 import { CoverContainer } from '../components/cover-container'
@@ -29,7 +29,11 @@ export default function JoinMatch() {
         setMatch(match);
     }
 
-    useEffect(() => { load() }, [matchID])
+    useEffect(() => {
+        load()
+        const interval = setInterval(load, 5000);
+        return () => clearInterval(interval);
+    }, [matchID]);
 
     const joinedMatch = useMemo(() => {
         if (!userMetadata || !matchID) return false;
@@ -43,7 +47,7 @@ export default function JoinMatch() {
                 <h1 className='text-3xl font-tomarik-brush text-red-900/85 mb-6'>Join Match</h1>
 
                 {!match && (
-                    <div className='bg-white/85 rounded-lg shadow p-6 text-amber-900'>Match not found.</div>
+                    <div className='text-amber-900'>Match not found.</div>
                 )}
 
                 {match && (
