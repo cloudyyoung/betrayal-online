@@ -59,11 +59,14 @@ export default function JoinMatch() {
 
                         <div className='space-y-2'>
                             <div className='text-amber-900 font-medium'>Players</div>
-                            <ul className='list-disc list-inside text-amber-800'>
-                                {match.players.map((p) => (
-                                    <li key={p.id}>{p.name ?? <span className='italic text-amber-700'>Empty</span>}</li>
+                            <div className='list-disc list-inside text-amber-800'>
+                                {match.players.filter(p => p.name).map((p) => (
+                                    <div key={p.id} className='flex flex-row justify-start items-center'>
+                                        <img src={p.data?.picture} alt={p.name} className='inline-block w-6 h-6 rounded-full mr-2 align-middle' />
+                                        <span>{p.name}</span>
+                                    </div>
                                 ))}
-                            </ul>
+                            </div>
                         </div>
 
                         <div className='pt-2'>
