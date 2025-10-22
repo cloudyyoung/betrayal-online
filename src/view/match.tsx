@@ -13,7 +13,7 @@ const lobbyClient = new LobbyClient({
 
 export default function JoinMatch() {
     const navigate = useNavigate()
-    const { user } = useAuth0();
+    const { user } = useAuth0()
     const { matchID } = useParams<{ matchID: string }>()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
