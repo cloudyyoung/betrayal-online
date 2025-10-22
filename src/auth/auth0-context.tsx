@@ -1,7 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { LobbyClient } from 'boardgame.io/client'
-import { BETRAYAL_GAME_NAME } from '../game';
 
 interface Auth0ContextType {
     accessToken: string | null;
@@ -14,10 +12,6 @@ interface Auth0ContextType {
 }
 
 const Auth0Context = createContext<Auth0ContextType | undefined>(undefined);
-
-const lobbyClient = new LobbyClient({
-    server: `http://${window.location.hostname}:8000`,
-})
 
 export const Auth0ContextProvider = ({ children }: { children: ReactNode }) => {
     const { user, getAccessTokenSilently, isAuthenticated } = useAuth0();
@@ -54,12 +48,10 @@ export const Auth0ContextProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         loadTokenAndMetadata();
-        refreshLobbyPlayerMetadata();
     }, [isAuthenticated, user?.sub]);
 
     const refreshMetadata = async () => {
         await loadTokenAndMetadata();
-        await refreshLobbyPlayerMetadata();
     };
 
     const getMetadata = (matchID: string) => {
@@ -125,35 +117,6 @@ export const Auth0ContextProvider = ({ children }: { children: ReactNode }) => {
             console.error('Failed to delete metadata:', error);
             throw error;
         }
-    }
-
-    const refreshLobbyPlayerMetadata = async () => {
-        if (!user || !userMetadata) return;
-
-        const updatePlayerMetadataRequests = []
-        for (const userMetadataKey in userMetadata) {
-            if (!userMetadataKey.startsWith('match|')) continue
-            const matchID = userMetadataKey.replace('match|', '');
-            const { playerID, credentials } = userMetadata[userMetadataKey];
-            updatePlayerMetadataRequests.push(
-                async () => {
-                    try {
-                        await lobbyClient.updatePlayer(BETRAYAL_GAME_NAME, matchID, {
-                            playerID,
-                            credentials,
-                            data: {
-                                sub: user.sub,
-                                picture: user.picture,
-                            }
-                        })
-                    } catch (error) {
-                        deleteMetadata(matchID);
-                    }
-                }
-            )
-        }
-
-        await Promise.all(updatePlayerMetadataRequests)
     }
 
     return (
