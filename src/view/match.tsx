@@ -154,8 +154,8 @@ const JoinedMatchButtons = ({ matchID, isFull }: { matchID: string; isFull: bool
 const PlayerItem = ({ name, picture }: { name?: string; picture?: string }) => {
     return (
         <div className='flex flex-row justify-start items-center'>
-            {picture && <img src={picture} alt={name} className='inline-block w-6 h-6 rounded-full mr-2 align-middle bg-orange-700/20' />}
-            {!picture && <div aria-hidden={true} className='inline-block w-6 h-6 rounded-full mr-2 align-middle bg-orange-700/20' />}
+            {name && picture && <img src={picture} alt={name} className='inline-block w-6 h-6 rounded-full mr-2 align-middle bg-orange-700/20' />}
+            {(!name || !picture) && <div aria-hidden={true} className='inline-block w-6 h-6 rounded-full mr-2 align-middle bg-orange-700/20' />}
             {name && <span>{name}</span>}
             {!name && <span className="italic">Empty</span>}
         </div>
