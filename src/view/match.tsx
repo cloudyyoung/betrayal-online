@@ -61,19 +61,19 @@ export default function JoinMatch() {
     return (
         <CoverContainer>
             <div className='bg-red-800/10 p-6 space-y-5 my-12'>
-                <h1 className='text-3xl font-tomarik-brush text-red-900/85 mb-6'>Join Game</h1>
+                <h1 className='text-3xl font-tomarik-brush text-red-900/85 mb-6'>Join Match</h1>
 
                 {error && <div className='text-sm text-red-700 mb-4'>{error}</div>}
                 {loading && <div className='text-amber-900 mb-4'>Loading…</div>}
 
                 {!match && !loading && (
-                    <div className='bg-white/85 rounded-lg shadow p-6 text-amber-900'>Game not found.</div>
+                    <div className='bg-white/85 rounded-lg shadow p-6 text-amber-900'>Match not found.</div>
                 )}
 
                 {match && (
                     <div className='space-y-4'>
                         <div>
-                            <div className='text-amber-900 font-medium'>Game {match.matchID}</div>
+                            <div className='text-amber-900 font-medium'>Match {match.matchID}</div>
                             <div className='text-amber-800 text-sm'>{occupied}/{capacity} players</div>
                         </div>
 
