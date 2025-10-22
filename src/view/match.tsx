@@ -14,7 +14,7 @@ const lobbyClient = new LobbyClient({
 
 export default function Match() {
     const { user } = useAuth0()
-    const { userMetadata } = useAuth0Context()
+    const { userMetadata, getMetadata } = useAuth0Context()
     const { matchID } = useParams<{ matchID: string }>()
     const [match, setMatch] = useState<LobbyAPI.Match | null>(null)
 
@@ -37,9 +37,7 @@ export default function Match() {
     }, [matchID, userMetadata]);
 
     const joinedMatch = useMemo(() => {
-        if (!userMetadata || !matchID) return false;
-        const savedMatch = userMetadata[matchID];
-        return !!savedMatch;
+        return !!getMetadata(matchID)
     }, [userMetadata, matchID]);
 
     return (

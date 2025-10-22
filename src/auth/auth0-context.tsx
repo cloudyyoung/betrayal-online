@@ -1,16 +1,23 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import { LobbyClient } from 'boardgame.io/client'
+import { BETRAYAL_GAME_NAME } from '../game';
 
 interface Auth0ContextType {
     accessToken: string | null;
     userMetadata: any;
     isLoadingMetadata: boolean;
     refreshMetadata: () => Promise<void>;
+    getMetadata: (matchID: string) => Promise<any>;
     updateMetadata: (matchID: string, playerID: string, credentials: string) => Promise<void>;
     deleteMetadata: (matchID: string) => Promise<void>;
 }
 
 const Auth0Context = createContext<Auth0ContextType | undefined>(undefined);
+
+const lobbyClient = new LobbyClient({
+    server: `http://${window.location.hostname}:8000`,
+})
 
 export const Auth0ContextProvider = ({ children }: { children: ReactNode }) => {
     const { user, getAccessTokenSilently, isAuthenticated } = useAuth0();
@@ -47,11 +54,21 @@ export const Auth0ContextProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         loadTokenAndMetadata();
+        refreshLobbyPlayerMetadata();
     }, [isAuthenticated, user?.sub]);
 
     const refreshMetadata = async () => {
         await loadTokenAndMetadata();
+        await refreshLobbyPlayerMetadata();
     };
+
+    const getMetadata = (matchID: string) => {
+        if (!accessToken || !user?.sub || !userMetadata) {
+            return null
+        }
+
+        return userMetadata[`match|${matchID}`];
+    }
 
     const updateMetadata = async (matchID: string, playerID: string, credentials: string) => {
         if (!accessToken || !user?.sub) {
@@ -67,7 +84,7 @@ export const Auth0ContextProvider = ({ children }: { children: ReactNode }) => {
                 },
                 body: JSON.stringify({
                     user_metadata: {
-                        [matchID]: {
+                        [`match|${matchID}`]: {
                             playerID,
                             credentials
                         }
@@ -89,7 +106,6 @@ export const Auth0ContextProvider = ({ children }: { children: ReactNode }) => {
         }
 
         try {
-
             const res = await fetch(`https://cloudyyoung.auth0.com/api/v2/users/${encodeURIComponent(user.sub)}`, {
                 method: 'PATCH',
                 headers: {
@@ -98,7 +114,7 @@ export const Auth0ContextProvider = ({ children }: { children: ReactNode }) => {
                 },
                 body: JSON.stringify({
                     user_metadata: {
-                        [matchID]: undefined
+                        [`match|${matchID}`]: undefined
                     }
                 })
             });
@@ -111,6 +127,35 @@ export const Auth0ContextProvider = ({ children }: { children: ReactNode }) => {
         }
     }
 
+    const refreshLobbyPlayerMetadata = async () => {
+        if (!user || !userMetadata) return;
+
+        const updatePlayerMetadataRequests = []
+        for (const userMetadataKey in userMetadata) {
+            if (!userMetadataKey.startsWith('match|')) continue
+            const matchID = userMetadataKey.replace('match|', '');
+            const { playerID, credentials } = userMetadata[userMetadataKey];
+            updatePlayerMetadataRequests.push(
+                async () => {
+                    try {
+                        await lobbyClient.updatePlayer(BETRAYAL_GAME_NAME, matchID, {
+                            playerID,
+                            credentials,
+                            data: {
+                                sub: user.sub,
+                                picture: user.picture,
+                            }
+                        })
+                    } catch (error) {
+                        deleteMetadata(matchID);
+                    }
+                }
+            )
+        }
+
+        await Promise.all(updatePlayerMetadataRequests)
+    }
+
     return (
         <Auth0Context.Provider
             value={{
@@ -118,6 +163,7 @@ export const Auth0ContextProvider = ({ children }: { children: ReactNode }) => {
                 userMetadata,
                 isLoadingMetadata,
                 refreshMetadata,
+                getMetadata,
                 updateMetadata,
                 deleteMetadata,
             }}
