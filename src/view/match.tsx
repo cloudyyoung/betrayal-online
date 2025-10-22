@@ -12,7 +12,7 @@ const lobbyClient = new LobbyClient({
     server: `http://${window.location.hostname}:8000`,
 })
 
-export default function JoinMatch() {
+export default function Match() {
     const { user } = useAuth0()
     const { userMetadata } = useAuth0Context()
     const { matchID } = useParams<{ matchID: string }>()

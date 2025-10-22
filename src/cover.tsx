@@ -1,14 +1,7 @@
 import { LogoutOptions, useAuth0, User } from '@auth0/auth0-react';
 import { Button } from './components/button';
 import { NavigateFunction, useNavigate } from 'react-router-dom'
-import { LobbyClient } from 'boardgame.io/client';
 import { CoverContainer } from './components/cover-container';
-import { BETRAYAL_GAME_NAME } from './game';
-
-
-const lobbyClient = new LobbyClient({
-    server: `http://${window.location.hostname}:8000`,
-})
 
 const BetrayalCover = () => {
     const navigate = useNavigate();
@@ -57,12 +50,8 @@ const AuthenticatedButtons = (
         user: User, logout: (options?: LogoutOptions) => Promise<void>, navigate: NavigateFunction
     }
 ) => {
-    const onCreateNewGame = async () => {
-        const { matchID } = await lobbyClient.createMatch(BETRAYAL_GAME_NAME, {
-            numPlayers: 6,
-        })
-
-        navigate(`/matches/${matchID}`);
+    const onCreateNewGame = () => {
+        navigate('/matches/new');
     }
 
     const onJoinExisting = () => {
@@ -79,7 +68,7 @@ const AuthenticatedButtons = (
                 <p className='text-sm sm:text-base'>Signed in as <span className='font-bold'>{user.name}</span></p>
                 <p className='text-sm sm:text-base' aria-hidden="true">•</p>
                 <Button
-                    className='text-sm sm:text-base text-zinc-700 hover:underline'
+                    className='text-sm sm:text-base text-orange-900 hover:underline'
                     onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
                 >
                     Sign Out

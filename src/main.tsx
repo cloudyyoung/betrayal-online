@@ -7,7 +7,8 @@ import { Auth0Provider } from '@auth0/auth0-react'
 import BetrayalCover from './cover'
 import BetrayalClient from './client'
 import MatchesList from './view/matches'
-import JoinMatch from './view/match'
+import Match from './view/match'
+import NewMatch from './view/new-match'
 import { ProtectedRoute } from './auth/protected-route'
 import { auth0Config } from './auth/auth0-config'
 import { Auth0ContextProvider } from './auth/auth0-context'
@@ -29,7 +30,8 @@ createRoot(document.getElementById('root')!).render(
               <Route path="/" element={<BetrayalCover />} />
               <Route element={<ProtectedRoute />}>
                 <Route path="/matches" element={<MatchesList />} />
-                <Route path="/matches/:matchID" element={<JoinMatch />} />
+                <Route path="/matches/new" element={<NewMatch />} />
+                <Route path="/matches/:matchID" element={<Match />} />
                 <Route path="/matches/:matchID/board" element={<BetrayalClient />} />
               </Route>
             </Routes>
