@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { getAuth0UserMetadata, updateAuth0UserMetadata } from './auth0-metadata';
 
 interface Auth0ContextType {
     accessToken: string | null;
@@ -8,6 +7,7 @@ interface Auth0ContextType {
     isLoadingMetadata: boolean;
     refreshMetadata: () => Promise<void>;
     updateMetadata: (matchID: string, playerID: string, credentials: string) => Promise<void>;
+    deleteMetadata: (matchID: string) => Promise<void>;
 }
 
 const Auth0Context = createContext<Auth0ContextType | undefined>(undefined);
@@ -30,8 +30,14 @@ export const Auth0ContextProvider = ({ children }: { children: ReactNode }) => {
             const token = await getAccessTokenSilently();
             setAccessToken(token);
 
-            const metadata = await getAuth0UserMetadata(token, user.sub);
-            setUserMetadata(metadata);
+            const res = await fetch(`https://cloudyyoung.auth0.com/api/v2/users/${encodeURIComponent(user.sub)}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            const data = await res.json();
+            setUserMetadata(data.user_metadata);
         } catch (error) {
             console.error('Failed to load Auth0 token or metadata:', error);
         } finally {
@@ -53,19 +59,57 @@ export const Auth0ContextProvider = ({ children }: { children: ReactNode }) => {
         }
 
         try {
-            const updatedMetadata = await updateAuth0UserMetadata(
-                accessToken,
-                user.sub,
-                matchID,
-                playerID,
-                credentials
-            );
-            setUserMetadata(updatedMetadata);
+            const res = await fetch(`https://cloudyyoung.auth0.com/api/v2/users/${encodeURIComponent(user.sub)}`, {
+                method: 'PATCH',
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user_metadata: {
+                        [matchID]: {
+                            playerID,
+                            credentials
+                        }
+                    }
+                })
+            });
+
+            const data = await res.json();
+            setUserMetadata(data.user_metadata);
         } catch (error) {
             console.error('Failed to update metadata:', error);
             throw error;
         }
     };
+
+    const deleteMetadata = async (matchID: string) => {
+        if (!accessToken || !user?.sub) {
+            throw new Error('Not authenticated');
+        }
+
+        try {
+
+            const res = await fetch(`https://cloudyyoung.auth0.com/api/v2/users/${encodeURIComponent(user.sub)}`, {
+                method: 'PATCH',
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user_metadata: {
+                        [matchID]: undefined
+                    }
+                })
+            });
+
+            const data = await res.json();
+            setUserMetadata(data.user_metadata);
+        } catch (error) {
+            console.error('Failed to delete metadata:', error);
+            throw error;
+        }
+    }
 
     return (
         <Auth0Context.Provider
@@ -75,6 +119,7 @@ export const Auth0ContextProvider = ({ children }: { children: ReactNode }) => {
                 isLoadingMetadata,
                 refreshMetadata,
                 updateMetadata,
+                deleteMetadata,
             }}
         >
             {children}

@@ -111,17 +111,21 @@ const NotJoinedMatchButtons = ({ matchID }: { matchID: string }) => {
 
 const JoinedMatchButtons = ({ matchID, isFull }: { matchID: string; isFull: boolean }) => {
     const navigate = useNavigate();
-    const { userMetadata } = useAuth0Context()
+    const { userMetadata, deleteMetadata } = useAuth0Context()
     const onGoToBoard = () => {
         navigate(`/matches/${matchID}/board`);
     }
     const onLeaveMatch = async () => {
         const playerID = userMetadata[matchID]?.playerID;
         const credentials = userMetadata[matchID]?.credentials;
-        await lobbyClient.leaveMatch(BETRAYAL_GAME_NAME, matchID, {
-            playerID: playerID,
-            credentials: credentials,
-        });
+        await Promise.all([
+            lobbyClient.leaveMatch(BETRAYAL_GAME_NAME, matchID, {
+                playerID: playerID,
+                credentials: credentials,
+            }),
+            deleteMetadata(matchID),
+        ])
+
         navigate(`/matches/`);
     }
 
