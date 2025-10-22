@@ -33,7 +33,7 @@ export default function Match() {
         load()
         const interval = setInterval(load, 5000);
         return () => clearInterval(interval);
-    }, [matchID]);
+    }, [matchID, userMetadata]);
 
     const joinedMatch = useMemo(() => {
         if (!userMetadata || !matchID) return false;
@@ -59,12 +59,9 @@ export default function Match() {
 
                         <div className='space-y-2'>
                             <div className='text-amber-900 font-medium'>Players</div>
-                            <div className='list-disc list-inside text-amber-800'>
-                                {match.players.filter(p => p.name).map((p) => (
-                                    <div key={p.id} className='flex flex-row justify-start items-center'>
-                                        <img src={p.data?.picture} alt={p.name} className='inline-block w-6 h-6 rounded-full mr-2 align-middle' />
-                                        <span>{p.name}</span>
-                                    </div>
+                            <div className='text-amber-800 space-y-1'>
+                                {match.players.map((p) => (
+                                    <PlayerItem key={p.id} name={p.name} picture={p.data?.picture} />
                                 ))}
                             </div>
                         </div>
@@ -122,5 +119,16 @@ const JoinedMatchButtons = ({ matchID }: { matchID: string }) => {
                 Go to Board
             </Button>
         </>
+    )
+}
+
+const PlayerItem = ({ name, picture }: { name?: string; picture?: string }) => {
+    return (
+        <div className='flex flex-row justify-start items-center'>
+            {picture && <img src={picture} alt={name} className='inline-block w-6 h-6 rounded-full mr-2 align-middle bg-orange-700/20' />}
+            {!picture && <div aria-hidden={true} className='inline-block w-6 h-6 rounded-full mr-2 align-middle bg-orange-700/20' />}
+            {name && <span>{name}</span>}
+            {!name && <span className="italic">Empty</span>}
+        </div>
     )
 }
