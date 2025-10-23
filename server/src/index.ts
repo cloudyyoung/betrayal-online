@@ -1,3 +1,7 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
+import connectDB from './db';
 import express, { Request, Response } from 'express';
 import http from 'http';
 import { Server as IOServer, Socket } from 'socket.io';
@@ -28,6 +32,16 @@ io.on('connection', (socket: Socket) => {
     });
 });
 
-server.listen(PORT, () => {
-    console.log(`Server listening on http://localhost:${PORT}`);
-});
+const start = async () => {
+    try {
+        await connectDB();
+    } catch (err) {
+        console.warn('Continuing to start server despite DB connection failure');
+    }
+
+    server.listen(PORT, () => {
+        console.log(`Server listening on http://localhost:${PORT}`);
+    });
+};
+
+start();
