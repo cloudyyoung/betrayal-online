@@ -34,7 +34,7 @@ export default function MatchesList() {
                 </div>
 
                 {matches.length === 0 && (
-                    <div className='p-6 text-amber-900'>No matches found.</div>
+                    <div className='text-amber-900'>No matches found.</div>
                 )}
                 {matches.map((m) => {
                     const occupied = m.players.filter(p => p.name).length
