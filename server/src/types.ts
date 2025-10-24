@@ -1,7 +1,7 @@
 export interface ServerToClientEvents { }
 export interface ClientToServerEvents extends ListMatches, CreateMatch, JoinMatch { }
 export interface InterServerEvents { }
-export interface SocketData { user?: { sub: string; name?: string; email?: string } }
+export interface SocketData { user: { sub: string; name: string; picture: string } }
 
 
 export type Match = {
