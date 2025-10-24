@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
-import { IAccount } from "@betrayal/shared"
+import { Account } from "@betrayal/shared"
 
-const accountSchema = new Schema<IAccount>({
+const accountSchema = new Schema<Account>({
     given_name: { type: String },
     family_name: { type: String },
     name: { type: String },
@@ -13,4 +13,4 @@ const accountSchema = new Schema<IAccount>({
     sub: { type: String, unique: true, required: true },
 });
 
-export const AccountModel: Model<IAccount> = mongoose.model<IAccount>('Account', accountSchema);
+export const AccountModel: Model<Account> = mongoose.model<Account>('Account', accountSchema);
