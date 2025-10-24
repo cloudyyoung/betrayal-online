@@ -1,5 +1,5 @@
 {
-    "name": "betrayal-online-server",
+    "name": "@betrayal/server",
     "version": "0.1.0",
     "private": true,
     "type": "module",

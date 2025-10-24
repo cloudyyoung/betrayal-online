@@ -1,5 +1,5 @@
 {
-  "name": "betrayal-at-the-house-on-the-hill",
+  "name": "@betrayal/client",
   "private": true,
   "version": "0.0.0",
   "type": "module",
