@@ -1,7 +1,9 @@
+import { IAccount } from "./models";
+
 export interface ServerToClientEvents { }
 export interface ClientToServerEvents extends ListMatches, CreateMatch, JoinMatch { }
 export interface InterServerEvents { }
-export interface SocketData { user: { sub: string; name: string; picture: string } }
+export interface SocketData { account: IAccount }
 
 
 export type Match = {
