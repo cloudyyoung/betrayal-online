@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 import jwksClient from 'jwks-rsa';
 import jwt, { JwtHeader, JwtPayload, SigningKeyCallback } from 'jsonwebtoken';
-import { Request, Response, NextFunction } from 'express';
 import { IAccount } from './models';
 
 dotenv.config();
