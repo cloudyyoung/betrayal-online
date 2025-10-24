@@ -1,16 +1,5 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
-
-export interface IAccount extends Document {
-    given_name: string;
-    family_name: string;
-    name: string;
-    nickname: string;
-    picture: string;
-    updated_at: Date;
-    email: string;
-    email_verified: boolean;
-    sub: string;
-}
+import { IAccount } from "@betrayal/shared"
 
 const accountSchema = new Schema<IAccount>({
     given_name: { type: String },
