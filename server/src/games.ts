@@ -4,8 +4,8 @@ import { Game, GameStatus, ListGames, CreateGame, JoinGame } from "@betrayal/sha
 export default (io: Server, socket: Socket) => {
     const listGames: ListGames = (_data, cb) => {
         const games = [
-            { id: 'game-1', players: 2, status: GameStatus.WAITING },
-            { id: 'game-2', players: 4, status: GameStatus.IN_PROGRESS }
+            { id: 'game-1', status: GameStatus.WAITING },
+            { id: 'game-2', status: GameStatus.IN_PROGRESS }
         ];
         cb({ games });
     }

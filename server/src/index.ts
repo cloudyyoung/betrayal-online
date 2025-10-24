@@ -6,7 +6,7 @@ import { Server, Socket } from 'socket.io';
 import connectDB from './db';
 import authMiddleware from './auth';
 import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from '@betrayal/shared';
-import matchesHandlers from './matches';
+import matchesHandlers from './games';
 
 dotenv.config();
 
