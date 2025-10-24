@@ -1,9 +1,10 @@
 import dotenv from 'dotenv';
 import express, { Request, Response } from 'express';
 import http from 'http';
-import { Server as IOServer, Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 
 import connectDB from './db';
+import authMiddleware from './auth';
 import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from './types';
 import matchesHandlers from './matches';
 
@@ -12,7 +13,7 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-const io = new IOServer<
+const io = new Server<
     ClientToServerEvents,
     ServerToClientEvents,
     InterServerEvents,
@@ -37,6 +38,8 @@ io.on('connection', (socket: Socket) => {
         console.log(`socket disconnected: ${socket.id} (${reason})`);
     });
 });
+
+io.use(authMiddleware);
 
 const start = async () => {
     try {
