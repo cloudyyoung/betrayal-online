@@ -1,15 +1,23 @@
 import dotenv from 'dotenv';
-dotenv.config();
-
-import connectDB from './db';
 import express, { Request, Response } from 'express';
 import http from 'http';
 import { Server as IOServer, Socket } from 'socket.io';
 
+import connectDB from './db';
+import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from './types';
+import matchesHandlers from './matches';
+
+dotenv.config();
+
 const app = express();
 const server = http.createServer(app);
 
-const io = new IOServer(server, {
+const io = new IOServer<
+    ClientToServerEvents,
+    ServerToClientEvents,
+    InterServerEvents,
+    SocketData
+>(server, {
     cors: {
         origin: '*',
         methods: ['GET', 'POST']
@@ -23,9 +31,7 @@ app.get('/health', (_req: Request, res: Response) => res.json({ ok: true }));
 io.on('connection', (socket: Socket) => {
     console.log(`socket connected: ${socket.id}`);
 
-    socket.on('ping', (cb) => {
-        if (typeof cb === 'function') cb({ pong: true, id: socket.id });
-    });
+    matchesHandlers(io, socket);
 
     socket.on('disconnect', (reason) => {
         console.log(`socket disconnected: ${socket.id} (${reason})`);
