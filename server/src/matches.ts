@@ -1,36 +1,35 @@
 import { type Server, Socket } from "socket.io";
-import { Match, MatchStatus, ListMatches, CreateMatch, JoinMatch  } from "./types";
+import { Game, GameStatus, ListGames, CreateGame, JoinGame } from "@betrayal/shared";
 
 export default (io: Server, socket: Socket) => {
-    const listMatches: ListMatches = (_data, cb) => {
-        const matches = [
-            { id: 'match-1', players: 2, status: MatchStatus.WAITING },
-            { id: 'match-2', players: 4, status: MatchStatus.IN_PROGRESS }
+    const listGames: ListGames = (_data, cb) => {
+        const games = [
+            { id: 'game-1', players: 2, status: GameStatus.WAITING },
+            { id: 'game-2', players: 4, status: GameStatus.IN_PROGRESS }
         ];
-        cb({ matches });
+        cb({ games });
     }
 
-    const createMatch: CreateMatch = (data, cb) => {
-        const newMatch = {
-            id: `match-${Math.floor(Math.random() * 1000)}`,
+    const createGame: CreateGame = (data, cb) => {
+        const newGame = {
+            id: `game-${Math.floor(Math.random() * 1000)}`,
             players: 1,
-            status: MatchStatus.WAITING,
+            status: GameStatus.WAITING,
             ...data
         };
-        cb({ match: newMatch });
+        cb({ game: newGame });
     }
 
-    const joinMatch: JoinMatch = (data, cb) => {
-        const { matchId, playerName } = data;
+    const joinGame: JoinGame = (data, cb) => {
+        const { gameId } = data;
         const response = {
-            matchId,
-            playerName,
-            status: MatchStatus.WAITING
+            gameId,
+            status: GameStatus.WAITING
         };
         cb(response);
     }
 
-    socket.on("list-matches", listMatches);
-    socket.on("create-match", createMatch);
-    socket.on("join-match", joinMatch);
+    socket.on("list-games", listGames);
+    socket.on("create-game", createGame);
+    socket.on("join-game", joinGame);
 }
