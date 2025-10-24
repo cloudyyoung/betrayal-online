@@ -1,5 +1,5 @@
 import { ExtendedError, Socket } from "socket.io";
-import { verifyToken } from "./auth/auth0";
+import { verifyToken } from "./auth0";
 
 export default async (socket: Socket, next: (err?: ExtendedError) => void) => {
     try {
