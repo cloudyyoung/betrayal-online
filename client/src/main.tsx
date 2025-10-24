@@ -5,7 +5,6 @@ import { BrowserRouter, Routes, Route, } from 'react-router-dom'
 import { Auth0Provider } from '@auth0/auth0-react'
 
 import BetrayalCover from './cover'
-import BetrayalClient from './client'
 import MatchesList from './view/matches'
 import Match from './view/match'
 import NewMatch from './view/new-match'
@@ -32,7 +31,6 @@ createRoot(document.getElementById('root')!).render(
                 <Route path="/matches" element={<MatchesList />} />
                 <Route path="/matches/new" element={<NewMatch />} />
                 <Route path="/matches/:matchID" element={<Match />} />
-                <Route path="/matches/:matchID/board" element={<BetrayalClient />} />
               </Route>
             </Routes>
           </Suspense>

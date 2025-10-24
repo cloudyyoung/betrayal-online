@@ -1,15 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LobbyClient } from 'boardgame.io/client';
 import { Button } from '../components/button';
 import { CoverContainer } from '../components/cover-container';
-import { BETRAYAL_GAME_NAME } from '../game';
 import clsx from 'clsx';
 import { Switch } from '../components/switch';
 
-const lobbyClient = new LobbyClient({
-    server: `http://${window.location.hostname}:8000`,
-});
 
 export default function NewMatch() {
     const navigate = useNavigate();
@@ -38,7 +33,7 @@ export default function NewMatch() {
                 setupData.unlisted = true; // This is a custom property you'd handle server-side
             }
 
-            const { matchID } = await lobbyClient.createMatch(BETRAYAL_GAME_NAME, setupData);
+            const matchID = 0
             navigate(`/matches/${matchID}`);
         } catch (err: any) {
             console.error('Failed to create match:', err);

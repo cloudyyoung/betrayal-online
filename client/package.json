@@ -6,8 +6,6 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:server": "tsc --project tsconfig.server.json",
-    "serve": "npm run build:server && node --loader ./loader.mjs dist/server.js",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "jest",
@@ -18,8 +16,6 @@
     "@auth0/auth0-react": "^2.8.0",
     "@headlessui/react": "^2.2.9",
     "@types/koa": "^3.0.1",
-    "@types/react-router-dom": "^5.3.3",
-    "boardgame.io": "^0.50.2",
     "class-transformer": "^0.5.1",
     "clsx": "^2.1.1",
     "koa": "^3.0.3",
@@ -27,7 +23,8 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.9.4",
-    "reflect-metadata": "^0.2.2"
+    "reflect-metadata": "^0.2.2",
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.38.0",

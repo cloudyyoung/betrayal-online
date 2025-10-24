@@ -1,22 +1,15 @@
 import { useEffect, useState } from 'react'
-import { LobbyClient } from 'boardgame.io/client'
-import { LobbyAPI } from 'boardgame.io'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../components/button'
-import { BETRAYAL_GAME_NAME } from '../game'
 import { CoverContainer } from '../components/cover-container'
 
-const lobbyClient = new LobbyClient({
-    server: `http://${window.location.hostname}:8000`,
-})
 
 export default function MatchesList() {
     const navigate = useNavigate()
-    const [matches, setMatches] = useState<LobbyAPI.Match[]>([])
+    const [matches, setMatches] = useState([])
 
     const loadMatches = async () => {
-        const res = await lobbyClient.listMatches(BETRAYAL_GAME_NAME)
-        setMatches(res.matches)
+        setMatches([])
     }
 
     useEffect(() => {
@@ -36,21 +29,6 @@ export default function MatchesList() {
                 {matches.length === 0 && (
                     <div className='text-amber-900'>No matches found.</div>
                 )}
-                {matches.map((m) => {
-                    const occupied = m.players.filter(p => p.name).length
-                    const capacity = m.players.length
-                    return (
-                        <div key={m.matchID} className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3'>
-                            <div>
-                                <div className='text-amber-900 font-medium'>Match {m.matchID}</div>
-                                <div className='text-amber-800 text-sm'>{occupied}/{capacity} players</div>
-                            </div>
-                            <div className='flex items-center gap-3'>
-                                <Button onClick={() => navigate(`/matches/${encodeURIComponent(m.matchID)}`)} className='bg-amber-500 text-white px-4 py-2 hover:bg-amber-600'>Details</Button>
-                            </div>
-                        </div>
-                    )
-                })}
             </div>
         </CoverContainer>
     )

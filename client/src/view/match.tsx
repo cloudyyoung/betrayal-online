@@ -1,32 +1,21 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { LobbyClient } from 'boardgame.io/client'
-import type { LobbyAPI } from 'boardgame.io'
 import { useAuth0 } from '@auth0/auth0-react';
 import { Button } from '../components/button'
-import { BETRAYAL_GAME_NAME } from '../game'
 import { CoverContainer } from '../components/cover-container'
 import { useAuth0Context } from '../auth/auth0-context';
-
-const lobbyClient = new LobbyClient({
-    server: `http://${window.location.hostname}:8000`,
-})
 
 export default function Match() {
     const { user } = useAuth0()
     const { userMetadata, getMetadata } = useAuth0Context()
     const { matchID } = useParams<{ matchID: string }>()
-    const [match, setMatch] = useState<LobbyAPI.Match | null>(null)
-
-    const occupied = useMemo(() => match?.players.filter(p => p.name).length ?? 0, [match])
-    const capacity = useMemo(() => match?.players.length ?? 0, [match])
-    const isFull = occupied >= capacity
+    const [match, setMatch] = useState(null)
 
     if (!matchID) return
     if (!user) return
 
     const load = async () => {
-        const match = await lobbyClient.getMatch(BETRAYAL_GAME_NAME, matchID)
+        const match = null
         setMatch(match);
     }
 
@@ -52,22 +41,20 @@ export default function Match() {
                 {match && (
                     <div className='space-y-4'>
                         <div>
-                            <div className='text-amber-900 font-medium'>Match {match.matchID}</div>
-                            <div className='text-amber-800 text-sm'>{occupied}/{capacity} players</div>
+                            <div className='text-amber-900 font-medium'>Match {match}</div>
+                            <div className='text-amber-800 text-sm'>0/0 players</div>
                         </div>
 
                         <div className='space-y-2'>
                             <div className='text-amber-900 font-medium'>Players</div>
                             <div className='text-amber-800 space-y-1'>
-                                {match.players.map((p) => (
-                                    <PlayerItem key={p.id} name={p.name} picture={p.data?.picture} />
-                                ))}
+                                
                             </div>
                         </div>
 
                         <div className='pt-2'>
                             {!joinedMatch && <NotJoinedMatchButtons matchID={matchID} />}
-                            {joinedMatch && <JoinedMatchButtons matchID={matchID} isFull={isFull} />}
+                            {joinedMatch && <JoinedMatchButtons matchID={matchID} isFull={false} />}
                         </div>
                     </div>
                 )}
@@ -83,16 +70,6 @@ const NotJoinedMatchButtons = ({ matchID }: { matchID: string }) => {
     if (!user) return null;
 
     const onJoin = async () => {
-        const res = await lobbyClient.joinMatch(BETRAYAL_GAME_NAME, matchID, {
-            playerName: user.name || user.given_name || user.nickname || 'Player',
-            data: {
-                sub: user.sub,
-                picture: user.picture,
-            },
-        })
-        const playerID = res.playerID
-        const credentials = res.playerCredentials
-        await updateMetadata(matchID, playerID, credentials);
     }
 
     return (
@@ -116,13 +93,6 @@ const JoinedMatchButtons = ({ matchID, isFull }: { matchID: string; isFull: bool
     const onLeaveMatch = async () => {
         const playerID = userMetadata[matchID]?.playerID;
         const credentials = userMetadata[matchID]?.credentials;
-        await Promise.all([
-            lobbyClient.leaveMatch(BETRAYAL_GAME_NAME, matchID, {
-                playerID: playerID,
-                credentials: credentials,
-            }),
-            deleteMetadata(matchID),
-        ])
 
         navigate(`/matches/`);
     }
