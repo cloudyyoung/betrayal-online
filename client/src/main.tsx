@@ -8,7 +8,7 @@ import BetrayalCover from './cover'
 import MatchesList from './view/matches'
 import Match from './view/match'
 import NewMatch from './view/new-match'
-import { ProtectedRoute } from './contexts/protected-route'
+import { ProtectedRoute } from './components/protected-route'
 
 import './index.css'
 
