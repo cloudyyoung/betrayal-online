@@ -1,4 +1,5 @@
 import { IAccount } from "./models";
+import { A } from "@betrayal/shared";
 
 export interface ServerToClientEvents { }
 export interface ClientToServerEvents extends ListMatches, CreateMatch, JoinMatch { }
