@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
-import { Account } from "@betrayal/shared"
+import { Account, Game } from "@betrayal/shared"
 
 const accountSchema = new Schema<Account>({
     given_name: { type: String },
@@ -14,3 +14,12 @@ const accountSchema = new Schema<Account>({
 });
 
 export const AccountModel: Model<Account> = mongoose.model<Account>('Account', accountSchema);
+
+const gameSchema = new Schema<Game>({
+    password: { type: String },
+    status: { type: String, required: true },
+    players: { type: Schema.Types.Mixed },
+    state: { type: Schema.Types.Mixed },
+});
+
+export const GameModel: Model<Game> = mongoose.model<Game>('Game', gameSchema);

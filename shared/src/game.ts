@@ -1,7 +1,8 @@
 export type Game = {
     id: string;
+    password?: string;
     status: GameStatus;
-    players?: PlayerState[];
+    players?: Record<string, PlayerState>;
     state?: GameState;
 }
 

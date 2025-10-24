@@ -1,5 +1,6 @@
 import { type Server, Socket } from "socket.io";
-import { Game, GameStatus, ListGames, CreateGame, JoinGame } from "@betrayal/shared";
+import { GameStatus, ListGames, CreateGame, JoinGame } from "@betrayal/shared";
+import { GameModel } from "./models";
 
 export default (io: Server, socket: Socket) => {
     const listGames: ListGames = (_data, cb) => {
@@ -11,13 +12,16 @@ export default (io: Server, socket: Socket) => {
     }
 
     const createGame: CreateGame = (data, cb) => {
-        const newGame = {
-            id: `game-${Math.floor(Math.random() * 1000)}`,
-            players: 1,
+        const game = new GameModel({
+            password: data.password,
             status: GameStatus.WAITING,
-            ...data
-        };
-        cb({ game: newGame });
+            players: {},
+            state: {}
+        });
+        const response: any = game.toObject();
+        response.id = game._id.toString();
+        response.isPasswordProtected = !!data.password;
+        cb(response);
     }
 
     const joinGame: JoinGame = (data, cb) => {
