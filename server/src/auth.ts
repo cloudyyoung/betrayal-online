@@ -1,5 +1,6 @@
 import { ExtendedError, Socket } from "socket.io";
 import { verifyToken } from "./auth0";
+import { AccountModel } from "./models";
 
 export default async (socket: Socket, next: (err?: ExtendedError) => void) => {
     try {
@@ -10,9 +11,14 @@ export default async (socket: Socket, next: (err?: ExtendedError) => void) => {
         const payload = await verifyToken(token as string);
         if (!payload) return next(new Error('unauthorized'));
 
-        socket.data.user = { sub: payload.sub as string, name: payload.name, picture: payload.picture };
+        socket.data.account = payload;
+
+        const account = new AccountModel(payload);
+        await account.save();
+
         next();
     } catch (err) {
+        console.error('Auth error in socket connection:', err);
         next(new Error('unauthorized'));
     }
 }

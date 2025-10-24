@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import jwksClient from 'jwks-rsa';
 import jwt, { JwtHeader, JwtPayload, SigningKeyCallback } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
+import { IAccount } from './models';
 
 dotenv.config();
 
@@ -25,18 +26,27 @@ const getKey = (header: JwtHeader, callback: SigningKeyCallback) => {
     });
 }
 
-export const verifyToken = async (token: string): Promise<JwtPayload> => {
-    const bare = token?.startsWith('Bearer ') ? token.slice(7) : token;
-    const payload = await jwt.verify(
-        bare,
-        getKey as any,
-        {
-            audience: AUTH0_AUDIENCE || undefined,
-            issuer: AUTH0_DOMAIN ? `https://${AUTH0_DOMAIN}/` : undefined,
-            algorithms: ['RS256'],
-        },
-    );
-    return payload as JwtPayload;
+export const verifyToken = async (token: string): Promise<JwtPayload & IAccount> => {
+    return new Promise((resolve, reject) => {
+        try {
+            const bare = token?.startsWith('Bearer ') ? token.slice(7) : token;
+            jwt.verify(
+                bare,
+                getKey as any,
+                {
+                    audience: AUTH0_AUDIENCE || undefined,
+                    issuer: AUTH0_DOMAIN ? `https://${AUTH0_DOMAIN}/` : undefined,
+                    algorithms: ['RS256'],
+                },
+                (err, decoded) => {
+                    if (err) return reject(err);
+                    resolve(decoded as JwtPayload & IAccount);
+                }
+            );
+        } catch (err) {
+            reject(err);
+        }
+    });
 }
 
 export function getTokenFromAuthHeader(authorization?: string) {

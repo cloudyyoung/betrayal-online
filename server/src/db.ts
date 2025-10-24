@@ -12,9 +12,7 @@ const connectDB = async (): Promise<void> => {
     }
 
     try {
-        await mongoose.connect(MONGO_URI, {
-            // default options in mongoose 7+
-        } as mongoose.ConnectOptions);
+        await mongoose.connect(MONGO_URI, { dbName: 'main', });
         console.log('Connected to MongoDB');
     } catch (err) {
         console.error('MongoDB connection error:', err);
