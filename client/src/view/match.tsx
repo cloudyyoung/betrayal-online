@@ -3,11 +3,11 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useAuth0 } from '@auth0/auth0-react';
 import { Button } from '../components/button'
 import { CoverContainer } from '../components/cover-container'
-import { useAuth0Context } from '../auth/auth0-context';
+import { useAuthContext } from '../contexts/auth-context';
 
 export default function Match() {
     const { user } = useAuth0()
-    const { userMetadata, getMetadata } = useAuth0Context()
+    const { userMetadata, getMetadata } = useAuthContext()
     const { matchID } = useParams<{ matchID: string }>()
     const [match, setMatch] = useState(null)
 
@@ -48,7 +48,7 @@ export default function Match() {
                         <div className='space-y-2'>
                             <div className='text-amber-900 font-medium'>Players</div>
                             <div className='text-amber-800 space-y-1'>
-                                
+
                             </div>
                         </div>
 
@@ -65,7 +65,7 @@ export default function Match() {
 
 const NotJoinedMatchButtons = ({ matchID }: { matchID: string }) => {
     const { user } = useAuth0();
-    const { updateMetadata } = useAuth0Context()
+    const { updateMetadata } = useAuthContext()
 
     if (!user) return null;
 
@@ -86,7 +86,7 @@ const NotJoinedMatchButtons = ({ matchID }: { matchID: string }) => {
 
 const JoinedMatchButtons = ({ matchID, isFull }: { matchID: string; isFull: boolean }) => {
     const navigate = useNavigate();
-    const { userMetadata, deleteMetadata } = useAuth0Context()
+    const { userMetadata, deleteMetadata } = useAuthContext()
     const onGoToBoard = () => {
         navigate(`/matches/${matchID}/board`);
     }
