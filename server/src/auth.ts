@@ -13,8 +13,7 @@ export default async (socket: Socket, next: (err?: ExtendedError) => void) => {
 
         socket.data.account = payload;
 
-        const account = new AccountModel(payload);
-        await account.save();
+        await AccountModel.updateOne({ sub: payload.sub }, payload, { upsert: true })
 
         next();
     } catch (err) {
