@@ -1,7 +1,9 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 import { Account, Game } from "@betrayal/shared"
 
-const accountSchema = new Schema<Account>({
+export type MAccount = Account & Document;
+
+const accountSchema = new Schema<MAccount>({
     given_name: { type: String },
     family_name: { type: String },
     name: { type: String },
@@ -13,13 +15,17 @@ const accountSchema = new Schema<Account>({
     sub: { type: String, unique: true, required: true },
 });
 
-export const AccountModel: Model<Account> = mongoose.model<Account>('Account', accountSchema);
+export const AccountModel: Model<MAccount> = mongoose.model<MAccount>('Account', accountSchema);
 
-const gameSchema = new Schema<Game>({
+export type MGame = Omit<Game, 'id' | 'isPasswordProtected'> & Document & {
+    password?: string;
+};
+
+const gameSchema = new Schema<MGame>({
     password: { type: String },
     status: { type: String, required: true },
     players: { type: Schema.Types.Mixed },
     state: { type: Schema.Types.Mixed },
 });
 
-export const GameModel: Model<Game> = mongoose.model<Game>('Game', gameSchema);
+export const GameModel: Model<MGame> = mongoose.model<MGame>('Game', gameSchema);

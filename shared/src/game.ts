@@ -1,6 +1,6 @@
 export type Game = {
     id: string;
-    password?: string;
+    isPasswordProtected?: boolean;
     status: GameStatus;
     players?: Record<string, PlayerState>;
     state?: GameState;

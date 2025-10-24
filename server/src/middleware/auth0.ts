@@ -1,6 +1,6 @@
 import jwksClient from 'jwks-rsa';
 import jwt, { JwtHeader, JwtPayload, SigningKeyCallback } from 'jsonwebtoken';
-import { IAccount } from './models';
+import { MAccount } from '../models';
 
 
 const getKey = (header: JwtHeader, callback: SigningKeyCallback) => {
@@ -24,7 +24,7 @@ const getKey = (header: JwtHeader, callback: SigningKeyCallback) => {
     });
 }
 
-export const verifyToken = async (token: string): Promise<JwtPayload & IAccount> => {
+export const verifyToken = async (token: string): Promise<JwtPayload & MAccount> => {
     const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN;
     const AUTH0_AUDIENCE = process.env.AUTH0_AUDIENCE;
 
@@ -45,7 +45,7 @@ export const verifyToken = async (token: string): Promise<JwtPayload & IAccount>
                 },
                 (err, decoded) => {
                     if (err) return reject(err);
-                    resolve(decoded as JwtPayload & IAccount);
+                    resolve(decoded as JwtPayload & MAccount);
                 }
             );
         } catch (err) {

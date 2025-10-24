@@ -1,26 +1,31 @@
 import { type Server, Socket } from "socket.io";
-import { GameStatus, ListGames, CreateGame, JoinGame } from "@betrayal/shared";
+import { GameStatus, ListGames, CreateGame, JoinGame, Game } from "@betrayal/shared";
 import { GameModel } from "./models";
 
 export default (io: Server, socket: Socket) => {
-    const listGames: ListGames = (_data, cb) => {
-        const games = [
-            { id: 'game-1', status: GameStatus.WAITING },
-            { id: 'game-2', status: GameStatus.IN_PROGRESS }
-        ];
+    const listGames: ListGames = async (_data, cb) => {
+        const mgames = await GameModel.find({})
+        const games: Array<Game> = mgames.map(mgame => ({
+            ...mgame.toObject(),
+            id: mgame._id as string,
+            isPasswordProtected: !!mgame.password
+        }));
         cb({ games });
     }
 
-    const createGame: CreateGame = (data, cb) => {
+    const createGame: CreateGame = async (data, cb) => {
+        console.log(data, data.password)
         const game = new GameModel({
             password: data.password,
             status: GameStatus.WAITING,
-            players: {},
-            state: {}
         });
-        const response: any = game.toObject();
-        response.id = game._id.toString();
-        response.isPasswordProtected = !!data.password;
+        const createdGame = await game.save()
+
+        const response: Game = {
+            id: createdGame._id as string,
+            isPasswordProtected: createdGame.password !== undefined,
+            ...createdGame.toObject(),
+        }
         cb(response);
     }
 

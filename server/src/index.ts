@@ -4,9 +4,10 @@ import http from 'http';
 import { Server, Socket } from 'socket.io';
 
 import connectDB from './db';
-import authMiddleware from './auth';
 import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from '@betrayal/shared';
-import matchesHandlers from './games';
+import gamesHandlers from './games';
+import { createAuthMiddleware } from './middleware/auth';
+import { createJsonOnlyMiddleware } from './middleware/jsonOnly';
 
 dotenv.config();
 
@@ -32,14 +33,16 @@ app.get('/health', (_req: Request, res: Response) => res.json({ ok: true }));
 io.on('connection', (socket: Socket) => {
     console.log(`socket connected: ${socket.id}`);
 
-    matchesHandlers(io, socket);
+    socket.use(createJsonOnlyMiddleware());
+
+    gamesHandlers(io, socket);
 
     socket.on('disconnect', (reason) => {
         console.log(`socket disconnected: ${socket.id} (${reason})`);
     });
 });
 
-io.use(authMiddleware);
+io.use(createAuthMiddleware());
 
 const start = async () => {
     try {
