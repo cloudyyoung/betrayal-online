@@ -11,10 +11,7 @@
         "skipLibCheck": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "types": [
-            "jest",
-            "@testing-library/jest-dom"
-        ],
+        "types": [],
         /* Bundler mode */
         "moduleResolution": "bundler",
         "allowImportingTsExtensions": true,
