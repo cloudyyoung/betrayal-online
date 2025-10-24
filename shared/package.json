@@ -11,8 +11,5 @@
     "build": "tsc -p tsconfig.json",
     "clean": "rm -rf dist"
   },
-  "devDependencies": {
-    "typescript": "^5.9.3",
-    "tsc": "^2.0.4"
-  }
+  "devDependencies": {}
 }
