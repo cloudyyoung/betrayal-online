@@ -1,23 +1,22 @@
-import dotenv from 'dotenv';
 import jwksClient from 'jwks-rsa';
 import jwt, { JwtHeader, JwtPayload, SigningKeyCallback } from 'jsonwebtoken';
 import { IAccount } from './models';
 
-dotenv.config();
-
-const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN || '';
-const AUTH0_AUDIENCE = process.env.AUTH0_AUDIENCE || '';
-
-if (!AUTH0_DOMAIN) {
-    console.warn('AUTH0_DOMAIN not set; JWT verification will fail until configured.');
-}
-
-const client = jwksClient({
-    jwksUri: `https://${AUTH0_DOMAIN}/.well-known/jwks.json`,
-});
 
 const getKey = (header: JwtHeader, callback: SigningKeyCallback) => {
     if (!header.kid) return callback(new Error('No KID in token header'));
+
+    const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN;
+    const AUTH0_AUDIENCE = process.env.AUTH0_AUDIENCE;
+
+    if (!AUTH0_DOMAIN) {
+        console.warn('AUTH0_DOMAIN not set; JWT verification will fail until configured.');
+    }
+
+    const client = jwksClient({
+        jwksUri: `https://${AUTH0_DOMAIN}/.well-known/jwks.json`,
+    });
+
     client.getSigningKey(header.kid, (err, key) => {
         if (err) return callback(err as Error);
         const signingKey = (key as any).getPublicKey ? (key as any).getPublicKey() : (key as any).publicKey;
@@ -26,6 +25,13 @@ const getKey = (header: JwtHeader, callback: SigningKeyCallback) => {
 }
 
 export const verifyToken = async (token: string): Promise<JwtPayload & IAccount> => {
+    const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN;
+    const AUTH0_AUDIENCE = process.env.AUTH0_AUDIENCE;
+
+    if (!AUTH0_DOMAIN) {
+        console.warn('AUTH0_DOMAIN not set; JWT verification will fail until configured.');
+    }
+
     return new Promise((resolve, reject) => {
         try {
             const bare = token?.startsWith('Bearer ') ? token.slice(7) : token;

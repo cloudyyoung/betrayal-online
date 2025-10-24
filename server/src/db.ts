@@ -1,11 +1,8 @@
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const MONGO_URI = process.env.MONGO_URI || '';
 
 const connectDB = async (): Promise<void> => {
+    const MONGO_URI = process.env.MONGO_URI;
+
     if (!MONGO_URI) {
         console.warn('MONGO_URI not set — skipping MongoDB connection');
         return;
