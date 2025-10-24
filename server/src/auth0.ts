@@ -16,7 +16,7 @@ const client = jwksClient({
     jwksUri: `https://${AUTH0_DOMAIN}/.well-known/jwks.json`,
 });
 
-function getKey(header: JwtHeader, callback: SigningKeyCallback) {
+const getKey = (header: JwtHeader, callback: SigningKeyCallback) => {
     if (!header.kid) return callback(new Error('No KID in token header'));
     client.getSigningKey(header.kid, (err, key) => {
         if (err) return callback(err as Error);
@@ -25,39 +25,18 @@ function getKey(header: JwtHeader, callback: SigningKeyCallback) {
     });
 }
 
-export function verifyToken(token: string): Promise<JwtPayload | null> {
-    return new Promise((resolve, reject) => {
-        try {
-            const bare = token?.startsWith('Bearer ') ? token.slice(7) : token;
-            jwt.verify(
-                bare,
-                getKey as any,
-                {
-                    audience: AUTH0_AUDIENCE || undefined,
-                    issuer: AUTH0_DOMAIN ? `https://${AUTH0_DOMAIN}/` : undefined,
-                    algorithms: ['RS256'],
-                },
-                (err, decoded) => {
-                    if (err) return reject(err);
-                    resolve(decoded as JwtPayload);
-                }
-            );
-        } catch (err) {
-            reject(err);
-        }
-    });
-}
-
-export async function requireAuth(req: Request, res: Response, next: NextFunction) {
-    try {
-        const auth = req.headers.authorization;
-        if (!auth) return res.status(401).json({ ok: false, error: 'missing authorization header' });
-        const decoded = await verifyToken(auth);
-        (req as any).auth = decoded;
-        next();
-    } catch (err: any) {
-        res.status(401).json({ ok: false, error: err?.message || 'invalid token' });
-    }
+export const verifyToken = async (token: string): Promise<JwtPayload> => {
+    const bare = token?.startsWith('Bearer ') ? token.slice(7) : token;
+    const payload = await jwt.verify(
+        bare,
+        getKey as any,
+        {
+            audience: AUTH0_AUDIENCE || undefined,
+            issuer: AUTH0_DOMAIN ? `https://${AUTH0_DOMAIN}/` : undefined,
+            algorithms: ['RS256'],
+        },
+    );
+    return payload as JwtPayload;
 }
 
 export function getTokenFromAuthHeader(authorization?: string) {
@@ -66,7 +45,4 @@ export function getTokenFromAuthHeader(authorization?: string) {
     return authorization;
 }
 
-export default {
-    verifyToken,
-    requireAuth,
-};
+export default { verifyToken };
