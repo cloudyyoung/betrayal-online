@@ -10,24 +10,18 @@ import { useAuth0 } from '@auth0/auth0-react'
  * Usage:
  * const { accessToken, getAccessToken, isAuthenticated } = useAuth0AccessToken(audience)
  */
-export function useAuth0AccessToken(audience?: string, scope?: string) {
+export function useAuth0AccessToken() {
     const { isAuthenticated, getAccessTokenSilently } = useAuth0()
     const [accessToken, setAccessToken] = useState<string | null>(null)
 
     const getAccessToken = useCallback(
-        async (opts?: { forceRefresh?: boolean }) => {
-            const tokenResponse = await getAccessTokenSilently({
-                audience,
-                scope,
-                ...(opts?.forceRefresh ? { ignoreCache: true } : {}),
-            } as any)
-
-            const token = tokenResponse.access_token
-
+        async () => {
+            const token = await getAccessTokenSilently()
+            console.log(token)
             setAccessToken(token)
             return token
         },
-        [audience, scope, getAccessTokenSilently],
+        [getAccessTokenSilently],
     )
 
     useEffect(() => {

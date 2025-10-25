@@ -7,7 +7,6 @@ const getKey = (header: JwtHeader, callback: SigningKeyCallback) => {
     if (!header.kid) return callback(new Error('No KID in token header'));
 
     const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN;
-    const AUTH0_AUDIENCE = process.env.AUTH0_AUDIENCE;
 
     if (!AUTH0_DOMAIN) {
         console.warn('AUTH0_DOMAIN not set; JWT verification will fail until configured.');
@@ -26,7 +25,6 @@ const getKey = (header: JwtHeader, callback: SigningKeyCallback) => {
 
 export const verifyToken = async (token: string): Promise<JwtPayload & MAccount> => {
     const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN;
-    const AUTH0_AUDIENCE = process.env.AUTH0_AUDIENCE;
 
     if (!AUTH0_DOMAIN) {
         console.warn('AUTH0_DOMAIN not set; JWT verification will fail until configured.');
@@ -39,8 +37,6 @@ export const verifyToken = async (token: string): Promise<JwtPayload & MAccount>
                 bare,
                 getKey as any,
                 {
-                    audience: AUTH0_AUDIENCE || undefined,
-                    issuer: AUTH0_DOMAIN ? `https://${AUTH0_DOMAIN}/` : undefined,
                     algorithms: ['RS256'],
                 },
                 (err, decoded) => {

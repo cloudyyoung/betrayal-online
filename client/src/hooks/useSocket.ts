@@ -12,7 +12,7 @@ import useAuth0AccessToken from './useAuth0AccessToken'
  *
  * Returns: { socket, connected, connecting, error, connect, disconnect }
  */
-export function useSocket(providedUrl?: string) {
+export function useSocket() {
     const { accessToken, getAccessToken, isAuthenticated } = useAuth0AccessToken()
 
     const socketRef = useRef<Socket<ServerToClientEvents, ClientToServerEvents> | null>(null)
@@ -20,8 +20,7 @@ export function useSocket(providedUrl?: string) {
     const [connecting, setConnecting] = useState(false)
     const [error, setError] = useState<any | null>(null)
 
-    const meta: any = import.meta
-    const url = (providedUrl ?? (meta?.env?.VITE_SOCKET_URL ?? window.location.origin)) as string
+    const url = "http://localhost:4000"
 
     const connect = useCallback(async () => {
         if (socketRef.current && socketRef.current.connected) {
@@ -32,11 +31,11 @@ export function useSocket(providedUrl?: string) {
         setError(null)
 
         try {
-            const socket = io(url, {
+            const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(url, {
                 autoConnect: true,
                 withCredentials: true,
                 auth: { token: accessToken },
-            }) as Socket<ServerToClientEvents, ClientToServerEvents>
+            })
 
             socketRef.current = socket
 
@@ -61,6 +60,17 @@ export function useSocket(providedUrl?: string) {
             return null
         }
     }, [accessToken, getAccessToken, isAuthenticated, url])
+
+    useEffect(() => {
+        const socket = socketRef.current
+        if (!socket) return
+
+        if (accessToken) {
+            socket.auth = { token: `Bearer ${accessToken}` }
+            socket.disconnect()
+            socket.connect()
+        }
+    }, [accessToken])
 
     const disconnect = useCallback(() => {
         if (socketRef.current) {

@@ -7,6 +7,7 @@ export function createAuthMiddleware() {
         try {
             const token = (socket.handshake.auth && (socket.handshake.auth as any).token) ||
                 (socket.handshake.headers && (socket.handshake.headers as any).authorization) || null;
+            console.log('token', token)
             if (!token) return next(new Error('unauthorized'));
 
             const payload = await verifyToken(token as string);

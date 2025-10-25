@@ -14,6 +14,11 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
+const isLocalhost = (origin?: string) => {
+    if (!origin) return false
+    return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin)
+}
+
 const io = new Server<
     ClientToServerEvents,
     ServerToClientEvents,
@@ -21,8 +26,15 @@ const io = new Server<
     SocketData
 >(server, {
     cors: {
-        origin: '*',
-        methods: ['GET', 'POST']
+        origin: (origin, callback) => {
+            // Allow empty origin (non-browser clients) or localhost dev origins
+            if (!origin || isLocalhost(origin) || origin === 'http://localhost:5173') return callback(null, true)
+            // For other origins, reject
+            return callback(new Error('Not allowed by CORS'))
+        },
+        methods: ['GET', 'POST'],
+        credentials: true,
+        allowedHeaders: ['Authorization', 'Content-Type'],
     }
 });
 

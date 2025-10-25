@@ -34,11 +34,11 @@ createRoot(document.getElementById('root')!).render(
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
             <Route path="/" element={<BetrayalCover />} />
-            {/* <Route element={<ProtectedRoute />}>
+            <Route element={<ProtectedRoute />}>
               <Route path="/matches" element={<MatchesList />} />
-              <Route path="/matches/new" element={<NewMatch />} />
-              <Route path="/matches/:matchID" element={<Match />} />
-            </Route> */}
+              {/* <Route path="/matches/new" element={<NewMatch />} /> */}
+              {/* <Route path="/matches/:matchID" element={<Match />} /> */}
+            </Route>
           </Routes>
         </Suspense>
       </BrowserRouter>
