@@ -17,7 +17,6 @@ export function useAuth0AccessToken() {
     const getAccessToken = useCallback(
         async () => {
             const token = await getAccessTokenSilently()
-            console.log(token)
             setAccessToken(token)
             return token
         },
