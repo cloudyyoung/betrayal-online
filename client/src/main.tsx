@@ -3,6 +3,7 @@ import { StrictMode, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route, } from 'react-router-dom'
 import { Auth0Provider } from '@auth0/auth0-react'
+import SocketProvider from './components/socket'
 
 import BetrayalCover from './cover'
 import MatchesList from './view/matches'
@@ -30,18 +31,20 @@ createRoot(document.getElementById('root')!).render(
       authorizationParams={auth0Config.authorizationParams}
       cacheLocation={auth0Config.cacheLocation}
     >
-      <BrowserRouter>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Routes>
-            <Route path="/" element={<BetrayalCover />} />
-            <Route element={<ProtectedRoute />}>
-              <Route path="/matches" element={<MatchesList />} />
-              {/* <Route path="/matches/new" element={<NewMatch />} /> */}
-              {/* <Route path="/matches/:matchID" element={<Match />} /> */}
-            </Route>
-          </Routes>
-        </Suspense>
-      </BrowserRouter>
+      <SocketProvider>
+        <BrowserRouter>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Routes>
+              <Route path="/" element={<BetrayalCover />} />
+              <Route element={<ProtectedRoute />}>
+                <Route path="/matches" element={<MatchesList />} />
+                {/* <Route path="/matches/new" element={<NewMatch />} /> */}
+                {/* <Route path="/matches/:matchID" element={<Match />} /> */}
+              </Route>
+            </Routes>
+          </Suspense>
+        </BrowserRouter>
+      </SocketProvider>
     </Auth0Provider>
   </StrictMode>,
 )

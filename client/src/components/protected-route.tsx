@@ -1,8 +1,10 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { Navigate, Outlet } from 'react-router-dom';
+import { useSocketContext } from './socket';
 
 export const ProtectedRoute = () => {
     const { isAuthenticated, isLoading } = useAuth0()
+    const { connected } = useSocketContext()
 
     if (isLoading) {
         return (
@@ -12,7 +14,7 @@ export const ProtectedRoute = () => {
         )
     }
 
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !connected) {
         return <Navigate to="/" replace />
     }
 
