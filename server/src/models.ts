@@ -5,15 +5,8 @@ import { Game } from './types/game';
 export type MAccount = Account & Document;
 
 const accountSchema = new Schema<MAccount>({
-    given_name: { type: String },
-    family_name: { type: String },
-    name: { type: String },
-    nickname: { type: String },
-    picture: { type: String },
-    updated_at: { type: Date },
-    email: { type: String },
-    email_verified: { type: Boolean },
-    sub: { type: String, unique: true, required: true },
+    id: { type: String, unique: true, required: true },
+    name: { type: String, required: true },
 });
 
 export const AccountModel: Model<MAccount> = mongoose.model<MAccount>('Account', accountSchema);

@@ -23,7 +23,7 @@ const isLocalhost = (origin?: string) => {
 
 app.use(cors({
     origin: (origin, callback) => {
-        if (!origin || isLocalhost(origin) || origin === 'http://localhost:5173') return callback(null, true);
+        if (!origin || isLocalhost(origin)) return callback(null, true);
         return callback(new Error('Not allowed by CORS'));
     },
     credentials: true,
@@ -39,6 +39,9 @@ app.use('/trpc', createExpressMiddleware({
 const httpServer = http.createServer(app);
 
 const wss = new WebSocketServer({ server: httpServer });
+wss.on('error', (err: NodeJS.ErrnoException) => {
+    if (err.code !== 'EADDRINUSE') console.error('WebSocket server error:', err);
+});
 applyWSSHandler({ wss, router: appRouter, createContext: createWSSContext });
 
 const PORT: number = process.env.PORT ? Number(process.env.PORT) : 4000;
@@ -49,6 +52,15 @@ const start = async () => {
     } catch {
         console.warn('Continuing to start server despite DB connection failure');
     }
+
+    httpServer.on('error', (err: NodeJS.ErrnoException) => {
+        if (err.code === 'EADDRINUSE') {
+            console.error(`Port ${PORT} is already in use. Kill the existing process and try again.`);
+        } else {
+            console.error('Server error:', err);
+        }
+        process.exit(1);
+    });
 
     httpServer.listen(PORT, () => {
         console.log(`Server listening on http://localhost:${PORT}`);

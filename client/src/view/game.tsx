@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAuth } from '../components/auth-provider';
 import { Button } from '../components/button'
 import { CoverContainer } from '../components/cover-container'
 import { trpc } from '../trpc'
@@ -60,7 +60,7 @@ export default function Game() {
 }
 
 const NotJoinedMatchButtons = ({ matchID: _matchID }: { matchID: string }) => {
-    const { user } = useAuth0();
+    const { user } = useAuth();
 
     if (!user) return null;
 

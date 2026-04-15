@@ -4,12 +4,12 @@ import { Button } from '../components/button';
 import { CoverContainer } from '../components/cover-container';
 import { Switch } from '../components/switch';
 import { Input } from '../components/input';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAuth } from '../components/auth-provider';
 import { trpc } from '../trpc';
 
 export default function NewGame() {
     const navigate = useNavigate();
-    const { user } = useAuth0();
+    const { user } = useAuth();
 
     const [name, setName] = useState<string>(`${user?.name}'s Game`);
     const [isPasswordProtected, setIsPasswordProtected] = useState<boolean>(false);

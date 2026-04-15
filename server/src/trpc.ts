@@ -1,30 +1,33 @@
 import { initTRPC, TRPCError } from '@trpc/server';
 import type { CreateExpressContextOptions } from '@trpc/server/adapters/express';
 import type { CreateWSSContextFnOptions } from '@trpc/server/adapters/ws';
-import { verifyToken } from './middleware/auth';
-import { AccountModel, MAccount } from './models';
-import type { JwtPayload } from 'jsonwebtoken';
+import { AccountModel } from './models';
+import type { Account } from './types/account';
 
-type Account = JwtPayload & MAccount;
-
-const resolveAccount = async (token: string | null | undefined): Promise<Account | null> => {
-    if (!token) return null;
+const decodeToken = (token: string): Account | null => {
     try {
-        const account = await verifyToken(token);
-        await AccountModel.updateOne({ sub: account.sub }, account, { upsert: true });
-        return account;
+        const decoded = JSON.parse(Buffer.from(token, 'base64').toString()) as Account;
+        if (!decoded.id || !decoded.name) return null;
+        return decoded;
     } catch {
         return null;
     }
 };
 
+const resolveAccount = async (token: string | null | undefined): Promise<Account | null> => {
+    if (!token) return null;
+    const account = decodeToken(token.replace(/^Bearer /, ''));
+    if (!account) return null;
+    await AccountModel.updateOne({ id: account.id }, account, { upsert: true });
+    return account;
+};
+
 export const createContext = async ({ req }: CreateExpressContextOptions) => {
-    const account = await resolveAccount(req.headers.authorization ?? null);
+    const account = await resolveAccount(req.headers.authorization);
     return { account };
 };
 
 export const createWSSContext = async ({ req, info }: CreateWSSContextFnOptions) => {
-    // Try connectionParams first (sent by tRPC WS client), fall back to URL query string
     const token =
         (info.connectionParams?.['token'] as string | undefined) ??
         new URL(req.url ?? '/', 'http://localhost').searchParams.get('token') ??

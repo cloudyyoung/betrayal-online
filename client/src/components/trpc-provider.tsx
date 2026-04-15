@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createWSClient, httpBatchLink, splitLink, wsLink } from '@trpc/client';
-import { useAuth0 } from '@auth0/auth0-react';
 import { trpc } from '../trpc';
+import { encodeToken, getStoredUser } from '../auth';
 
 const queryClient = new QueryClient();
 
@@ -10,14 +10,12 @@ const HTTP_URL = 'http://localhost:4000/trpc';
 const WS_URL = 'ws://localhost:4000';
 
 export function TrpcProvider({ children }: { children: React.ReactNode }) {
-    const { getAccessTokenSilently } = useAuth0();
-
     const [trpcClient] = useState(() => {
         const wsClient = createWSClient({
             url: WS_URL,
-            connectionParams: async () => {
-                const token = await getAccessTokenSilently();
-                return { token };
+            connectionParams: () => {
+                const user = getStoredUser();
+                return user ? { token: encodeToken(user) } : {};
             },
         });
 
@@ -28,9 +26,9 @@ export function TrpcProvider({ children }: { children: React.ReactNode }) {
                     true: wsLink({ client: wsClient }),
                     false: httpBatchLink({
                         url: HTTP_URL,
-                        async headers() {
-                            const token = await getAccessTokenSilently();
-                            return { Authorization: `Bearer ${token}` };
+                        headers() {
+                            const user = getStoredUser();
+                            return user ? { Authorization: `Bearer ${encodeToken(user)}` } : {};
                         },
                     }),
                 }),

@@ -27,8 +27,8 @@ export const gameRouter = router({
     create: protectedProcedure
         .input(z.object({ name: z.string(), password: z.string().optional() }))
         .mutation(async ({ input, ctx }) => {
-            const players = { [ctx.account.sub]: { isReady: false } };
-            const playersOrder = [ctx.account.sub];
+            const players = { [ctx.account.id]: { isReady: false } };
+            const playersOrder = [ctx.account.id];
             const state = {};
             const createdAt = DateTime.now();
 

@@ -19,8 +19,6 @@
         "@trpc/server": "^11.16.0",
         "cors": "^2.8.6",
         "express": "^5.1.0",
-        "jsonwebtoken": "^9.0.2",
-        "jwks-rsa": "^3.2.0",
         "mongoose": "^8.19.2",
         "ws": "^8.20.0"
     },
