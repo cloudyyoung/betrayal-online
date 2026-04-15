@@ -1,10 +1,7 @@
 import { LogoutOptions, useAuth0, User } from '@auth0/auth0-react';
-import clsx from 'clsx';
 import { NavigateFunction, useNavigate } from 'react-router-dom'
 import { Button } from './components/button';
 import { CoverContainer } from './components/cover-container';
-import { useSocket } from './components/socket';
-
 const BetrayalCover = () => {
     const navigate = useNavigate();
 
@@ -52,8 +49,6 @@ const AuthenticatedButtons = (
         user: User, logout: (options?: LogoutOptions) => Promise<void>, navigate: NavigateFunction
     }
 ) => {
-    const { isConnected } = useSocket();
-
     const onCreateNewGame = () => {
         navigate('/games/new');
     }
@@ -69,10 +64,6 @@ const AuthenticatedButtons = (
                 <Button onClick={onJoinExisting} className='bg-white/80 text-amber-700 font-tomarik-brush sm:text-xl px-8 py-4 hover:bg-white w-full max-w-xs sm:w-fit'>Join Existing</Button>
             </div>
             <div className='flex flex-row gap-1 sm:gap-2 justify-center items-center w-full'>
-                <p className={clsx(
-                    "w-2 h-2 rounded-full -mt-1",
-                    isConnected ? "bg-green-700" : "bg-red-700"
-                )} />
                 <p className='text-sm sm:text-base'>Signed in as <span className='font-bold'>{user.name}</span></p>
                 <p className='text-sm sm:text-base' aria-hidden="true">•</p>
                 <Button

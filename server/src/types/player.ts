@@ -1,5 +1,4 @@
-import { CharacterTraitScaleIndex, getCharacterById, type PlayableCharacterId } from './character'
-
+import { CharacterTraitScaleIndex, getCharacterById, type PlayableCharacterId } from './character';
 
 export interface Player {
     id: string

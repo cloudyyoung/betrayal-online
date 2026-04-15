@@ -12,8 +12,7 @@
   },
   "workspaces": [
     "client",
-    "server",
-    "shared"
+    "server"
   ],
   "license": "ISC",
   "author": "",
@@ -21,18 +20,16 @@
   "main": "index.js",
   "scripts": {
     "dev": "concurrently \"npm run watch --prefix shared\" \"npm run dev --prefix client\" \"npm run dev --prefix server\"",
-    "postinstall": "npm run build --prefix shared"
+    "postinstall": "npm run build --prefix server"
   },
   "dependencies": {
     "dotenv": "^17.2.3",
     "luxon": "^3.7.2",
-    "react-use": "^17.6.0",
-    "socket.io": "^4.8.1"
+    "react-use": "^17.6.0"
   },
   "devDependencies": {
     "@types/luxon": "^3.7.1",
     "@types/node": "^24.9.1",
-    "@types/socket.io": "^3.0.2",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
     "concurrently": "^8.2.0",

@@ -3,28 +3,28 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/button';
 import { CoverContainer } from '../components/cover-container';
 import { Switch } from '../components/switch';
-import { useSocket } from '../components/socket';
 import { Input } from '../components/input';
 import { useAuth0 } from '@auth0/auth0-react';
-
+import { trpc } from '../trpc';
 
 export default function NewGame() {
     const navigate = useNavigate();
     const { user } = useAuth0();
-    const { socket } = useSocket();
 
     const [name, setName] = useState<string>(`${user?.name}'s Game`);
     const [isPasswordProtected, setIsPasswordProtected] = useState<boolean>(false);
     const [password, setPassword] = useState<string>('');
 
-    const handleCreateGame = async () => {
-        socket.emit('create-game', {
+    const createGame = trpc.game.create.useMutation({
+        onSuccess: (game) => {
+            navigate(`/games/${game.id}`);
+        },
+    });
+
+    const handleCreateGame = () => {
+        createGame.mutate({
             name,
-            password: isPasswordProtected ? password : undefined
-        }, (response: any) => {
-            const { id, ...game } = response;
-            navigate(`/games/${id}`);
-            console.log(game)
+            password: isPasswordProtected ? password : undefined,
         });
     };
 
@@ -80,9 +80,9 @@ export default function NewGame() {
                     <Button
                         onClick={handleCreateGame}
                         className='flex-1 bg-yellow-700 text-white font-tomarik-brush text-lg px-6 py-3 hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed'
-                        disabled={isPasswordProtected && password.trim() === ''}
+                        disabled={(isPasswordProtected && password.trim() === '') || createGame.isPending}
                     >
-                        Create Game
+                        {createGame.isPending ? 'Creating...' : 'Create Game'}
                     </Button>
                 </div>
             </div>

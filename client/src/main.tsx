@@ -3,7 +3,7 @@ import { StrictMode, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route, } from 'react-router-dom'
 import { Auth0Provider } from '@auth0/auth0-react'
-import SocketProvider from './components/socket'
+import TrpcProvider from './components/trpc-provider'
 
 import BetrayalCover from './cover'
 import GamesList from './view/games'
@@ -31,7 +31,7 @@ createRoot(document.getElementById('root')!).render(
       authorizationParams={auth0Config.authorizationParams}
       cacheLocation={auth0Config.cacheLocation}
     >
-      <SocketProvider>
+      <TrpcProvider>
         <BrowserRouter>
           <Suspense fallback={<div>Loading...</div>}>
             <Routes>
@@ -44,7 +44,7 @@ createRoot(document.getElementById('root')!).render(
             </Routes>
           </Suspense>
         </BrowserRouter>
-      </SocketProvider>
+      </TrpcProvider>
     </Auth0Provider>
   </StrictMode>,
 )

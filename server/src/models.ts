@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
-import { Account, Game } from "@betrayal/shared"
+import { Account } from './types/account';
+import { Game } from './types/game';
 
 export type MAccount = Account & Document;
 

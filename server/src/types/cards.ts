@@ -1,4 +1,4 @@
-import { Haunt } from './haunt'
+import { Haunt } from './haunt';
 
 export interface ScenarioCard {
     id: number
