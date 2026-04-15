@@ -18,7 +18,7 @@ const resolveAccount = async (token: string | null | undefined): Promise<Account
     if (!token) return null;
     const account = decodeToken(token.replace(/^Bearer /, ''));
     if (!account) return null;
-    await AccountModel.updateOne({ id: account.id }, { $set: account }, { upsert: true });
+    await AccountModel.updateOne({ _id: account.id }, { $set: account }, { upsert: true });
     return account;
 };
 

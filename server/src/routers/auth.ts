@@ -3,7 +3,9 @@ import { TRPCError } from '@trpc/server';
 import { Resend } from 'resend';
 import { router, publicProcedure } from '../trpc';
 import { AccountModel, OtpModel } from '../models';
-import crypto from 'crypto';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -23,12 +25,12 @@ export const authRouter = router({
                 from: 'Betrayal Online <betrayal@cloudyyoung.com>',
                 to: email,
                 template: {
-                    id: 'login-code',
+                    id: 'betrayal-online-login-passcode',
                     variables: {
                         code,
                     },
                 }
-            } as Parameters<typeof resend.emails.send>[0]);
+            })
 
             return { ok: true };
         }),
@@ -48,7 +50,6 @@ export const authRouter = router({
             let account = await AccountModel.findOne({ email });
             if (!account) {
                 account = await AccountModel.create({
-                    id: crypto.randomUUID(),
                     name,
                     email,
                 });
