@@ -12,12 +12,11 @@ const generateCode = (): string =>
 
 export const authRouter = router({
     requestCode: publicProcedure
-        .input(z.object({ email: z.string().email() }))
+        .input(z.object({ email: z.email() }))
         .mutation(async ({ input }) => {
             const { email } = input;
             const code = generateCode();
 
-            await OtpModel.deleteMany({ email });
             await OtpModel.create({ email, code });
 
             await resend.emails.send({
@@ -35,7 +34,7 @@ export const authRouter = router({
         }),
 
     verifyCode: publicProcedure
-        .input(z.object({ email: z.string().email(), code: z.string().length(6), name: z.string().min(1) }))
+        .input(z.object({ email: z.email(), code: z.string().length(6), name: z.string().min(1) }))
         .mutation(async ({ input }) => {
             const { email, code, name } = input;
 
