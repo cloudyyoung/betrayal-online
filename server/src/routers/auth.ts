@@ -1,0 +1,63 @@
+import { z } from 'zod';
+import { TRPCError } from '@trpc/server';
+import { Resend } from 'resend';
+import { router, publicProcedure } from '../trpc';
+import { AccountModel, OtpModel } from '../models';
+import crypto from 'crypto';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+const generateCode = (): string =>
+    Math.floor(100000 + Math.random() * 900000).toString();
+
+export const authRouter = router({
+    requestCode: publicProcedure
+        .input(z.object({ email: z.string().email() }))
+        .mutation(async ({ input }) => {
+            const { email } = input;
+            const code = generateCode();
+
+            await OtpModel.deleteMany({ email });
+            await OtpModel.create({ email, code });
+
+            await resend.emails.send({
+                from: 'Betrayal Online <betrayal@cloudyyoung.com>',
+                to: email,
+                template: {
+                    id: 'login-code',
+                    variables: {
+                        code,
+                    },
+                }
+            } as Parameters<typeof resend.emails.send>[0]);
+
+            return { ok: true };
+        }),
+
+    verifyCode: publicProcedure
+        .input(z.object({ email: z.string().email(), code: z.string().length(6), name: z.string().min(1) }))
+        .mutation(async ({ input }) => {
+            const { email, code, name } = input;
+
+            const otp = await OtpModel.findOne({ email, code });
+            if (!otp) {
+                throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Invalid or expired code.' });
+            }
+
+            await OtpModel.deleteMany({ email });
+
+            let account = await AccountModel.findOne({ email });
+            if (!account) {
+                account = await AccountModel.create({
+                    id: crypto.randomUUID(),
+                    name,
+                    email,
+                });
+            } else {
+                account.name = name;
+                await account.save();
+            }
+
+            return { id: account.id, name: account.name, email: account.email };
+        }),
+});

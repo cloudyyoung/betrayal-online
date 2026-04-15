@@ -4,6 +4,7 @@ import { Button } from './components/button';
 import { CoverContainer } from './components/cover-container';
 import { Input } from './components/input';
 import { useAuth } from './components/auth-provider';
+import { trpc } from './trpc';
 
 const BetrayalCover = () => {
     const { user, login, logout } = useAuth();
@@ -37,30 +38,92 @@ const BetrayalCover = () => {
 
 export default BetrayalCover;
 
-const LoginForm = ({ onLogin }: { onLogin: (name: string) => void }) => {
+const LoginForm = ({ onLogin }: { onLogin: (user: import('./auth').User) => void }) => {
+    const [step, setStep] = useState<'email' | 'code'>('email');
+    const [email, setEmail] = useState('');
     const [name, setName] = useState('');
+    const [code, setCode] = useState('');
+    const [error, setError] = useState('');
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const requestCode = trpc.auth.requestCode.useMutation({
+        onSuccess: () => { setStep('code'); setError(''); },
+        onError: (e) => setError(e.message),
+    });
+
+    const verifyCode = trpc.auth.verifyCode.useMutation({
+        onSuccess: (user) => onLogin(user),
+        onError: (e) => setError(e.message),
+    });
+
+    const handleRequestCode = (e: React.FormEvent) => {
         e.preventDefault();
-        if (name.trim()) onLogin(name.trim());
+        if (!email.trim() || !name.trim()) return;
+        requestCode.mutate({ email: email.trim() });
     };
 
+    const handleVerifyCode = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (code.trim().length !== 6) return;
+        verifyCode.mutate({ email: email.trim(), code: code.trim(), name: name.trim() });
+    };
+
+    if (step === 'email') {
+        return (
+            <form onSubmit={handleRequestCode} className='flex flex-col gap-3 w-full max-w-xs items-center mt-4'>
+                <Input
+                    type='text'
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                    placeholder='Your name'
+                    className='w-full'
+                    autoFocus
+                />
+                <Input
+                    type='email'
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    placeholder='Your email address'
+                    className='w-full'
+                />
+                {error && <p className='text-red-700 text-sm'>{error}</p>}
+                <Button
+                    type='submit'
+                    disabled={!email.trim() || !name.trim() || requestCode.isPending}
+                    className='w-full bg-yellow-700/90 text-white font-tomarik-brush text-lg px-8 py-3 hover:bg-yellow-700 disabled:opacity-50'
+                >
+                    {requestCode.isPending ? 'Sending...' : 'Send Code'}
+                </Button>
+            </form>
+        );
+    }
+
     return (
-        <form onSubmit={handleSubmit} className='flex flex-col gap-3 w-full max-w-xs items-center mt-4'>
+        <form onSubmit={handleVerifyCode} className='flex flex-col gap-3 w-full max-w-xs items-center mt-4'>
+            <p className='text-amber-900 text-sm text-center'>
+                A 6-digit code was sent to <strong>{email}</strong>
+            </p>
             <Input
                 type='text'
-                value={name}
-                onChange={e => setName(e.target.value)}
-                placeholder='Enter your name to play'
-                className='w-full'
+                value={code}
+                onChange={e => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                placeholder='Enter 6-digit code'
+                className='w-full tracking-widest text-center'
                 autoFocus
             />
+            {error && <p className='text-red-700 text-sm'>{error}</p>}
             <Button
                 type='submit'
-                disabled={!name.trim()}
+                disabled={code.trim().length !== 6 || verifyCode.isPending}
                 className='w-full bg-yellow-700/90 text-white font-tomarik-brush text-lg px-8 py-3 hover:bg-yellow-700 disabled:opacity-50'
             >
-                Play
+                {verifyCode.isPending ? 'Verifying...' : 'Play'}
+            </Button>
+            <Button
+                type='button'
+                onClick={() => { setStep('email'); setCode(''); setError(''); }}
+                className='text-sm text-amber-800 hover:underline'
+            >
+                Use a different email
             </Button>
         </form>
     );

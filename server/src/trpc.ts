@@ -7,7 +7,7 @@ import type { Account } from './types/account';
 const decodeToken = (token: string): Account | null => {
     try {
         const decoded = JSON.parse(Buffer.from(token, 'base64').toString()) as Account;
-        if (!decoded.id || !decoded.name) return null;
+        if (!decoded.id || !decoded.name || !decoded.email) return null;
         return decoded;
     } catch {
         return null;
@@ -18,7 +18,7 @@ const resolveAccount = async (token: string | null | undefined): Promise<Account
     if (!token) return null;
     const account = decodeToken(token.replace(/^Bearer /, ''));
     if (!account) return null;
-    await AccountModel.updateOne({ id: account.id }, account, { upsert: true });
+    await AccountModel.updateOne({ id: account.id }, { $set: account }, { upsert: true });
     return account;
 };
 

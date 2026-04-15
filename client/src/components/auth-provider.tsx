@@ -3,7 +3,7 @@ import { type User, getStoredUser, storeUser, removeUser } from '../auth';
 
 interface AuthContextValue {
     user: User | null;
-    login: (name: string) => void;
+    login: (user: User) => void;
     logout: () => void;
 }
 
@@ -12,11 +12,9 @@ const AuthContext = createContext<AuthContextValue>(undefined!);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(getStoredUser);
 
-    const login = (name: string) => {
-        const existing = getStoredUser();
-        const newUser: User = { id: existing?.id ?? crypto.randomUUID(), name };
-        storeUser(newUser);
-        setUser(newUser);
+    const login = (user: User) => {
+        storeUser(user);
+        setUser(user);
     };
 
     const logout = () => {

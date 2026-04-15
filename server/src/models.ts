@@ -7,9 +7,24 @@ export type MAccount = Account & Document;
 const accountSchema = new Schema<MAccount>({
     id: { type: String, unique: true, required: true },
     name: { type: String, required: true },
+    email: { type: String, required: true },
 });
 
 export const AccountModel: Model<MAccount> = mongoose.model<MAccount>('Account', accountSchema);
+
+export interface MOtp extends Document {
+    email: string;
+    code: string;
+    createdAt: Date;
+}
+
+const otpSchema = new Schema<MOtp>({
+    email: { type: String, required: true, index: true },
+    code: { type: String, required: true },
+    createdAt: { type: Date, default: Date.now, expires: 600 }, // TTL: 10 minutes
+});
+
+export const OtpModel: Model<MOtp> = mongoose.model<MOtp>('Otp', otpSchema);
 
 export type MGame = Omit<Game, 'id' | 'isPasswordProtected'> & Document & {
     password?: string;

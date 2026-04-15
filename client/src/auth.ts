@@ -1,6 +1,7 @@
 export interface User {
     id: string;
     name: string;
+    email: string;
 }
 
 const AUTH_KEY = 'betrayal-user';
