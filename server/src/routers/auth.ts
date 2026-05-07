@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { randomInt } from 'crypto';
 import { TRPCError } from '@trpc/server';
 import { Resend } from 'resend';
 import jwt from 'jsonwebtoken';
@@ -10,14 +11,23 @@ dotenv.config();
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const generateCode = (): string =>
-    Math.floor(100000 + Math.random() * 900000).toString();
+const generateCode = (): string => randomInt(100000, 1000000).toString();
 
 export const authRouter = router({
     requestCode: publicProcedure
         .input(z.object({ email: z.email() }))
         .mutation(async ({ input }) => {
             const { email } = input;
+
+            const recentCutoff = new Date(Date.now() - 60_000);
+            const recentOtp = await OtpModel.findOne({ email, createdAt: { $gt: recentCutoff } });
+            if (recentOtp) {
+                throw new TRPCError({
+                    code: 'TOO_MANY_REQUESTS',
+                    message: 'A code was recently sent. Please wait a minute before requesting a new one.',
+                });
+            }
+
             const code = generateCode();
 
             await OtpModel.create({ email, code });

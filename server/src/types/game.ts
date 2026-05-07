@@ -1,5 +1,3 @@
-import { DateTime } from 'luxon';
-
 export type Game = {
     id: string;
     name: string;
@@ -8,7 +6,7 @@ export type Game = {
     players: Record<string, PlayerState>;
     playersOrder: Array<string>;
     state: GameState;
-    createdAt: DateTime;
+    createdAt: string;
 }
 
 export enum GameStatus {

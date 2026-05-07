@@ -59,12 +59,20 @@ export default function Game() {
     )
 }
 
-const NotJoinedMatchButtons = ({ matchID: _matchID }: { matchID: string }) => {
+const NotJoinedMatchButtons = ({ matchID }: { matchID: string }) => {
     const { user } = useAuth();
+    const utils = trpc.useUtils();
+
+    const joinMutation = trpc.game.join.useMutation({
+        onSuccess: () => {
+            utils.game.get.invalidate({ gameId: matchID });
+        },
+    });
 
     if (!user) return null;
 
     const onJoin = async () => {
+        joinMutation.mutate({ gameId: matchID });
     }
 
     return (

@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { DateTime } from 'luxon';
 import { on } from 'events';
 import { router, protectedProcedure } from '../trpc';
 import { GameModel } from '../models';
@@ -10,8 +9,8 @@ export const gameRouter = router({
     list: protectedProcedure.query(async () => {
         const mgames = await GameModel.find();
         return mgames.map(mgame => {
-            const { password, ...rest } = mgame.toObject() as any;
-            return { ...rest, id: String(mgame._id), isPasswordProtected: !!password };
+            const { password, _id, __v, createdAt, ...rest } = mgame.toObject() as any;
+            return { ...rest, id: String(_id), isPasswordProtected: !!password, createdAt: createdAt instanceof Date ? createdAt.toISOString() : createdAt };
         });
     }),
 
@@ -20,8 +19,8 @@ export const gameRouter = router({
         .query(async ({ input }) => {
             const mgame = await GameModel.findById(input.gameId);
             if (!mgame) return null;
-            const { password, ...rest } = mgame.toObject() as any;
-            return { ...rest, id: String(mgame._id), isPasswordProtected: !!password };
+            const { password, _id, __v, createdAt, ...rest } = mgame.toObject() as any;
+            return { ...rest, id: String(_id), isPasswordProtected: !!password, createdAt: createdAt instanceof Date ? createdAt.toISOString() : createdAt };
         }),
 
     create: protectedProcedure
@@ -30,7 +29,7 @@ export const gameRouter = router({
             const players = { [ctx.account.id]: { isReady: false } };
             const playersOrder = [ctx.account.id];
             const state = {};
-            const createdAt = DateTime.now();
+            const createdAt = new Date().toISOString();
 
             const mgame = new GameModel({
                 name: input.name,
