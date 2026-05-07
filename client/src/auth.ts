@@ -2,6 +2,7 @@ export interface User {
     id: string;
     name: string;
     email: string;
+    token: string;
 }
 
 const AUTH_KEY = 'betrayal-user';
@@ -24,4 +25,4 @@ export const removeUser = (): void => {
     localStorage.removeItem(AUTH_KEY);
 };
 
-export const encodeToken = (user: User): string => btoa(JSON.stringify(user));
+export const encodeToken = (user: User): string => user.token;

@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { Resend } from 'resend';
-import { router, publicProcedure } from '../trpc';
+import jwt from 'jsonwebtoken';
+import { router, publicProcedure, JWT_SECRET } from '../trpc';
 import { AccountModel, OtpModel } from '../models';
 import dotenv from 'dotenv';
 
@@ -58,6 +59,6 @@ export const authRouter = router({
                 await account.save();
             }
 
-            return { id: account.id, name: account.name, email: account.email };
+            return { id: account.id, name: account.name, email: account.email, token: jwt.sign({ id: account.id, name: account.name, email: account.email }, JWT_SECRET, { expiresIn: '7d' }) };
         }),
 });

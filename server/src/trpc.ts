@@ -1,12 +1,15 @@
 import { initTRPC, TRPCError } from '@trpc/server';
 import type { CreateExpressContextOptions } from '@trpc/server/adapters/express';
 import type { CreateWSSContextFnOptions } from '@trpc/server/adapters/ws';
+import jwt from 'jsonwebtoken';
 import { AccountModel } from './models';
 import type { Account } from './types/account';
 
+export const JWT_SECRET = process.env.JWT_SECRET ?? (() => { throw new Error('JWT_SECRET env variable is not set'); })();
+
 const decodeToken = (token: string): Account | null => {
     try {
-        const decoded = JSON.parse(Buffer.from(token, 'base64').toString()) as Account;
+        const decoded = jwt.verify(token, JWT_SECRET) as Account;
         if (!decoded.id || !decoded.name || !decoded.email) return null;
         return decoded;
     } catch {
