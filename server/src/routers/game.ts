@@ -5,13 +5,15 @@ import { GameModel } from '../models';
 import { GameStatus } from '../types/game';
 import { gameEvents } from '../event-emitter';
 
+const toGameResponse = (mgame: any) => {
+    const { password, _id, __v, createdAt, ...rest } = mgame.toObject();
+    return { ...rest, id: String(_id), isPasswordProtected: !!password, createdAt: createdAt instanceof Date ? createdAt.toISOString() : createdAt };
+};
+
 export const gameRouter = router({
     list: protectedProcedure.query(async () => {
         const mgames = await GameModel.find();
-        return mgames.map(mgame => {
-            const { password, _id, __v, createdAt, ...rest } = mgame.toObject() as any;
-            return { ...rest, id: String(_id), isPasswordProtected: !!password, createdAt: createdAt instanceof Date ? createdAt.toISOString() : createdAt };
-        });
+        return mgames.map(toGameResponse);
     }),
 
     get: protectedProcedure
@@ -19,8 +21,7 @@ export const gameRouter = router({
         .query(async ({ input }) => {
             const mgame = await GameModel.findById(input.gameId);
             if (!mgame) return null;
-            const { password, _id, __v, createdAt, ...rest } = mgame.toObject() as any;
-            return { ...rest, id: String(_id), isPasswordProtected: !!password, createdAt: createdAt instanceof Date ? createdAt.toISOString() : createdAt };
+            return toGameResponse(mgame);
         }),
 
     create: protectedProcedure

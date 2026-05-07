@@ -71,7 +71,7 @@ const NotJoinedMatchButtons = ({ matchID }: { matchID: string }) => {
 
     if (!user) return null;
 
-    const onJoin = async () => {
+    const onJoin = () => {
         joinMutation.mutate({ gameId: matchID });
     }
 
