@@ -59,6 +59,11 @@ export const authRouter = router({
                 await account.save();
             }
 
-            return { id: account.id, name: account.name, email: account.email, token: jwt.sign({ id: account.id, name: account.name, email: account.email }, JWT_SECRET, { expiresIn: '7d' }) };
+            const token = jwt.sign(
+                { id: account.id, name: account.name, email: account.email },
+                JWT_SECRET,
+                { expiresIn: '7d' }
+            );
+            return { id: account.id, name: account.name, email: account.email, token };
         }),
 });
