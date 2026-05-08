@@ -16,7 +16,7 @@ const BetrayalCover = () => {
 
     return (
         <CoverContainer>
-            <div className='flex flex-col justify-center items-center h-screen gap-4 -mt-8'>
+            <div className='flex flex-col justify-center items-center h-screen gap-6 -mt-8'>
                 <img
                     className='w-xs -ml-1.5 sm:w-10/12 sm:ml-0'
                     src="/betrayal-logo-cropped.png"
@@ -26,7 +26,7 @@ const BetrayalCover = () => {
                     Unofficial, scripted online web version
                 </div>
                 {user
-                    ? <AuthenticatedButtons name={user.name} wsConnected={wsConnected} onLogout={logout} navigate={navigate} />
+                    ? <AuthenticatedButtons name={user.name} email={user.email} wsConnected={wsConnected} onLogout={logout} navigate={navigate} />
                     : <LoginForm onLogin={login} />
                 }
             </div>
@@ -135,11 +135,13 @@ const LoginForm = ({ onLogin }: { onLogin: (user: import('../auth').LocalAccount
 
 const AuthenticatedButtons = ({
     name,
+    email,
     wsConnected,
     onLogout,
     navigate,
 }: {
     name: string;
+    email: string;
     wsConnected: boolean;
     onLogout: () => void;
     navigate: ReturnType<typeof useNavigate>;
