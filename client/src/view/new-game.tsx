@@ -78,6 +78,12 @@ export default function NewGame() {
                 {/* Action Buttons */}
                 <div className='flex gap-3 pt-4'>
                     <Button
+                        onClick={() => navigate(-1)}
+                        className='bg-amber-900/20 text-amber-900 font-tomarik-brush text-lg px-6 py-3 hover:bg-amber-900/30'
+                    >
+                        Back
+                    </Button>
+                    <Button
                         onClick={handleCreateGame}
                         className='flex-1 bg-yellow-700 text-white font-tomarik-brush text-lg px-6 py-3 hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed'
                         disabled={(isPasswordProtected && password.trim() === '') || createGame.isPending}

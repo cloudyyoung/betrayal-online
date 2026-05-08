@@ -23,7 +23,10 @@ export default function GamesList() {
             <div className='bg-red-800/10 p-6 space-y-5 my-12'>
                 <div className='flex items-center justify-between mb-6'>
                     <h1 className='text-3xl font-tomarik-brush text-red-900/85'>Available Games</h1>
-                    <Button onClick={() => refetch()} className='bg-amber-700 text-white px-4 py-2 hover:bg-amber-600'>Refresh</Button>
+                    <div className='flex gap-2'>
+                        <Button onClick={() => navigate(-1)} className='bg-amber-900/20 text-amber-900 px-4 py-2 hover:bg-amber-900/30'>Back</Button>
+                        <Button onClick={() => refetch()} className='bg-amber-700 text-white px-4 py-2 hover:bg-amber-600'>Refresh</Button>
+                    </div>
                 </div>
 
                 {games.map((game) => (
