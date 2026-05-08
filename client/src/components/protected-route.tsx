@@ -1,23 +1,14 @@
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useTimeoutFn } from 'react-use';
-import { useSocket } from './socket';
+import { useAuth } from './auth-provider';
 
 export const ProtectedRoute = () => {
-    const { isConnected, isConnecting } = useSocket()
+    const { user } = useAuth();
     const navigate = useNavigate();
+
     useTimeoutFn(() => {
-        if (!isConnected && !isConnecting) {
-            navigate('/');
-        }
-    }, 2000);
+        if (!user) navigate('/');
+    }, 500);
 
-    if (isConnecting) {
-        return (
-            <div className="min-h-screen bg-[url('/bg-light-big.jpg')] bg-repeat bg-cover bg-center flex items-center justify-center">
-                <div className="text-yellow-900 text-2xl font-tomarik-brush">Loading...</div>
-            </div>
-        )
-    }
-
-    return <Outlet />
+    return <Outlet />;
 };

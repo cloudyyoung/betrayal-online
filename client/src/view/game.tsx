@@ -1,23 +1,29 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAuth } from '../components/auth-provider';
 import { Button } from '../components/button'
 import { CoverContainer } from '../components/cover-container'
-import { useSocket } from '../components/socket';
-import { type Game } from '@betrayal/shared';
+import { trpc } from '../trpc'
 
 export default function Game() {
     const { gameId } = useParams<{ gameId: string }>()
-    const { socket } = useSocket();
-    const [game, setGame] = useState<Game | null>(null)
+    const utils = trpc.useUtils()
+    const { data: game } = trpc.game.get.useQuery(
+        { gameId: gameId! },
+        { enabled: !!gameId }
+    )
 
-    if (!gameId) return
+    trpc.game.onGameChange.useSubscription(
+        { gameId: gameId! },
+        {
+            enabled: !!gameId,
+            onData: () => {
+                utils.game.get.invalidate({ gameId: gameId! })
+            },
+        }
+    )
 
-    useEffect(() => {
-        socket.emit('get-game', { gameId }, (response) => {
-            setGame(response.game);
-        })
-    }, [socket, gameId]);
+    if (!gameId) return null
 
     return (
         <CoverContainer>
@@ -54,11 +60,19 @@ export default function Game() {
 }
 
 const NotJoinedMatchButtons = ({ matchID }: { matchID: string }) => {
-    const { user } = useAuth0();
+    const { user } = useAuth();
+    const utils = trpc.useUtils();
+
+    const joinMutation = trpc.game.join.useMutation({
+        onSuccess: () => {
+            utils.game.get.invalidate({ gameId: matchID });
+        },
+    });
 
     if (!user) return null;
 
-    const onJoin = async () => {
+    const onJoin = () => {
+        joinMutation.mutate({ gameId: matchID });
     }
 
     return (
@@ -136,16 +150,5 @@ const JoinedMatchButtons = ({ matchID, isFull }: { matchID: string; isFull: bool
                 </div>
             )}
             </>
-    )
-}
-
-const PlayerItem = ({ name, picture }: { name?: string; picture?: string }) => {
-    return (
-        <div className='flex flex-row justify-start items-center'>
-            {name && picture && <img src={picture} alt={name} className='inline-block w-6 h-6 rounded-full mr-2 align-middle bg-orange-700/20' />}
-            {(!name || !picture) && <div aria-hidden={true} className='inline-block w-6 h-6 rounded-full mr-2 align-middle bg-orange-700/20' />}
-            {name && <span>{name}</span>}
-            {!name && <span className="italic">Empty</span>}
-        </div>
     )
 }

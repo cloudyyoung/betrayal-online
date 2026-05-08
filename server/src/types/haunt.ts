@@ -1,4 +1,4 @@
-import { OmenCard, ScenarioCard } from './cards'
+import { OmenCard, ScenarioCard } from './cards';
 
 export type HauntTraitorCondition =
     | 'HAUNT_REVEALER'

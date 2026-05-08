@@ -1,21 +1,29 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
-import { Account, Game } from "@betrayal/shared"
+import { Account } from './types/account';
+import { Game } from './types/game';
 
 export type MAccount = Account & Document;
 
 const accountSchema = new Schema<MAccount>({
-    given_name: { type: String },
-    family_name: { type: String },
-    name: { type: String },
-    nickname: { type: String },
-    picture: { type: String },
-    updated_at: { type: Date },
-    email: { type: String },
-    email_verified: { type: Boolean },
-    sub: { type: String, unique: true, required: true },
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
 });
 
 export const AccountModel: Model<MAccount> = mongoose.model<MAccount>('Account', accountSchema);
+
+export interface MOtp extends Document {
+    email: string;
+    code: string;
+    createdAt: Date;
+}
+
+const otpSchema = new Schema<MOtp>({
+    email: { type: String, required: true, index: true },
+    code: { type: String, required: true },
+    createdAt: { type: Date, default: Date.now, expires: 600 }, // TTL: 10 minutes
+});
+
+export const OtpModel: Model<MOtp> = mongoose.model<MOtp>('Otp', otpSchema);
 
 export type MGame = Omit<Game, 'id' | 'isPasswordProtected'> & Document & {
     password?: string;
