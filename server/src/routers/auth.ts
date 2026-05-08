@@ -3,9 +3,10 @@ import { randomInt } from 'crypto';
 import { TRPCError } from '@trpc/server';
 import { Resend } from 'resend';
 import jwt from 'jsonwebtoken';
-import { router, publicProcedure, JWT_SECRET } from '../trpc';
-import { AccountModel, OtpModel } from '../models';
 import dotenv from 'dotenv';
+import { router, publicProcedure, JWT_SECRET } from '../trpc';
+import { AccountModel } from '../types/account';
+import { OtpModel } from '../types/otp';
 
 dotenv.config();
 

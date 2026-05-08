@@ -2,8 +2,7 @@ import { initTRPC, TRPCError } from '@trpc/server';
 import type { CreateExpressContextOptions } from '@trpc/server/adapters/express';
 import type { CreateWSSContextFnOptions } from '@trpc/server/adapters/ws';
 import jwt from 'jsonwebtoken';
-import { AccountModel } from './models';
-import { Account } from './models';
+import { AccountModel, Account } from './types/account'
 import dotenv from 'dotenv';
 
 dotenv.config();
