@@ -163,7 +163,7 @@ const AuthenticatedButtons = ({
         </div>
         <div className='flex flex-row gap-1 sm:gap-2 justify-center items-center w-full'>
             <span className={clsx('w-2 h-2 rounded-full', wsConnected ? 'bg-green-600' : 'bg-red-600')} />
-            <p className='text-sm sm:text-base'>Playing as <span className='font-bold'>{name}</span></p>
+            <p className='text-sm sm:text-base' title={email}>Playing as <span className='font-bold'>{name}</span></p>
             <p className='text-sm sm:text-base' aria-hidden="true">•</p>
             <Button className='text-sm sm:text-base text-orange-900 hover:underline' onClick={onLogout}>
                 Sign Out
