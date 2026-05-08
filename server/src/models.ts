@@ -1,5 +1,4 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
-import { Game } from './types/game';
 
 export type Account = {
     name: string;
@@ -26,20 +25,3 @@ const otpSchema = new Schema<Otp>({
 });
 
 export const OtpModel: Model<Otp> = mongoose.model<Otp>('Otp', otpSchema);
-
-export type MGame = Omit<Game, 'id' | 'isPasswordProtected' | 'createdAt'> & Document & {
-    password?: string;
-    createdAt: Date;
-};
-
-const gameSchema = new Schema<MGame>({
-    name: { type: String, required: true },
-    password: { type: String },
-    status: { type: String, required: true },
-    players: { type: Schema.Types.Mixed, required: true },
-    playersOrder: { type: [String], required: true },
-    state: { type: Schema.Types.Mixed, required: true },
-    createdAt: { type: Date, required: true },
-});
-
-export const GameModel: Model<MGame> = mongoose.model<MGame>('Game', gameSchema);
