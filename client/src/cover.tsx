@@ -38,7 +38,7 @@ const BetrayalCover = () => {
 
 export default BetrayalCover;
 
-const LoginForm = ({ onLogin }: { onLogin: (user: import('./auth').User) => void }) => {
+const LoginForm = ({ onLogin }: { onLogin: (user: import('./auth').LocalAccount) => void }) => {
     const [step, setStep] = useState<'email' | 'code'>('email');
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');

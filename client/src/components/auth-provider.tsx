@@ -1,18 +1,18 @@
 import React, { createContext, useContext, useState } from 'react';
-import { type User, getStoredUser, storeUser, removeUser } from '../auth';
+import { type LocalAccount, getStoredUser, storeUser, removeUser } from '../auth';
 
 interface AuthContextValue {
-    user: User | null;
-    login: (user: User) => void;
+    user: LocalAccount | null;
+    login: (user: LocalAccount) => void;
     logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue>(undefined!);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState<User | null>(getStoredUser);
+    const [user, setUser] = useState<LocalAccount | null>(getStoredUser);
 
-    const login = (user: User) => {
+    const login = (user: LocalAccount) => {
         storeUser(user);
         setUser(user);
     };
