@@ -25,8 +25,9 @@ const otpSchema = new Schema<MOtp>({
 
 export const OtpModel: Model<MOtp> = mongoose.model<MOtp>('Otp', otpSchema);
 
-export type MGame = Omit<Game, 'id' | 'isPasswordProtected'> & Document & {
+export type MGame = Omit<Game, 'id' | 'isPasswordProtected' | 'createdAt'> & Document & {
     password?: string;
+    createdAt: Date;
 };
 
 const gameSchema = new Schema<MGame>({
@@ -36,7 +37,7 @@ const gameSchema = new Schema<MGame>({
     players: { type: Schema.Types.Mixed, required: true },
     playersOrder: { type: [String], required: true },
     state: { type: Schema.Types.Mixed, required: true },
-    createdAt: { type: Schema.Types.Date, required: true },
+    createdAt: { type: Date, required: true },
 });
 
 export const GameModel: Model<MGame> = mongoose.model<MGame>('Game', gameSchema);
