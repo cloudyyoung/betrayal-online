@@ -3,7 +3,7 @@ import type { CreateExpressContextOptions } from '@trpc/server/adapters/express'
 import type { CreateWSSContextFnOptions } from '@trpc/server/adapters/ws';
 import jwt from 'jsonwebtoken';
 import { AccountModel } from './models';
-import type { Account } from './types/account';
+import { Account } from './models';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -13,7 +13,7 @@ export const JWT_SECRET = process.env.JWT_SECRET ?? (() => { throw new Error('JW
 const decodeToken = (token: string): Account | null => {
     try {
         const decoded = jwt.verify(token, JWT_SECRET) as Account;
-        if (!decoded.id || !decoded.name || !decoded.email) return null;
+        if (!decoded.name || !decoded.email) return null;
         return decoded;
     } catch {
         return null;
@@ -24,7 +24,7 @@ const resolveAccount = async (token: string | null | undefined): Promise<Account
     if (!token) return null;
     const account = decodeToken(token.replace(/^Bearer /, ''));
     if (!account) return null;
-    await AccountModel.updateOne({ _id: account.id }, { $set: account }, { upsert: true });
+    await AccountModel.updateOne({ email: account.email }, { $set: account }, { upsert: true });
     return account;
 };
 

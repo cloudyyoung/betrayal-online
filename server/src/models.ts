@@ -1,15 +1,17 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
-import { Account } from './types/account';
 import { Game } from './types/game';
 
-export type MAccount = Account & Document;
+export type Account = {
+    name: string;
+    email: string;
+} & Document;
 
-const accountSchema = new Schema<MAccount>({
+const accountSchema = new Schema<Account>({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
 });
 
-export const AccountModel: Model<MAccount> = mongoose.model<MAccount>('Account', accountSchema);
+export const AccountModel: Model<Account> = mongoose.model<Account>('Account', accountSchema);
 
 export interface MOtp extends Document {
     email: string;

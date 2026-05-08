@@ -70,10 +70,10 @@ export const authRouter = router({
             }
 
             const token = jwt.sign(
-                { id: account.id, name: account.name, email: account.email },
+                { name: account.name, email: account.email },
                 JWT_SECRET,
                 { expiresIn: '7d' }
             );
-            return { id: account.id, name: account.name, email: account.email, token };
+            return { name: account.name, email: account.email, token };
         }),
 });
