@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { PlayableCharacter } from '../data/character';
+import { PlayableCharacter } from '@betrayal/server/src/data/character';
 
 const getPortraitUrl = (id: string) => `/character-boards/${id}.png`;
 

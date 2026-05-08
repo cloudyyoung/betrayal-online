@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from './components/button';
-import { CoverContainer } from './components/cover-container';
-import { Input } from './components/input';
-import { useAuth } from './components/auth-provider';
-import { trpc } from './trpc';
+import { Button } from '../components/button';
+import { CoverContainer } from '../components/cover-container';
+import { Input } from '../components/input';
+import { useAuth } from '../components/auth-provider';
+import { trpc } from '../trpc';
+import { useWsConnected } from '../components/trpc-provider';
+import clsx from 'clsx';
 
 const BetrayalCover = () => {
     const { user, login, logout } = useAuth();
     const navigate = useNavigate();
+
+    const wsConnected = useWsConnected();
 
     return (
         <CoverContainer>
@@ -22,7 +26,7 @@ const BetrayalCover = () => {
                     Unofficial, scripted online web version
                 </div>
                 {user
-                    ? <AuthenticatedButtons name={user.name} onLogout={logout} navigate={navigate} />
+                    ? <AuthenticatedButtons name={user.name} wsConnected={wsConnected} onLogout={logout} navigate={navigate} />
                     : <LoginForm onLogin={login} />
                 }
             </div>
@@ -38,7 +42,7 @@ const BetrayalCover = () => {
 
 export default BetrayalCover;
 
-const LoginForm = ({ onLogin }: { onLogin: (user: import('./auth').LocalAccount) => void }) => {
+const LoginForm = ({ onLogin }: { onLogin: (user: import('../auth').LocalAccount) => void }) => {
     const [step, setStep] = useState<'email' | 'code'>('email');
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
@@ -131,10 +135,12 @@ const LoginForm = ({ onLogin }: { onLogin: (user: import('./auth').LocalAccount)
 
 const AuthenticatedButtons = ({
     name,
+    wsConnected,
     onLogout,
     navigate,
 }: {
     name: string;
+    wsConnected: boolean;
     onLogout: () => void;
     navigate: ReturnType<typeof useNavigate>;
 }) => (
@@ -154,6 +160,7 @@ const AuthenticatedButtons = ({
             </Button>
         </div>
         <div className='flex flex-row gap-1 sm:gap-2 justify-center items-center w-full'>
+            <span className={clsx('w-2 h-2 rounded-full', wsConnected ? 'bg-green-600' : 'bg-red-600')} />
             <p className='text-sm sm:text-base'>Playing as <span className='font-bold'>{name}</span></p>
             <p className='text-sm sm:text-base' aria-hidden="true">•</p>
             <Button className='text-sm sm:text-base text-orange-900 hover:underline' onClick={onLogout}>

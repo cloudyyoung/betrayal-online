@@ -1,5 +1,5 @@
 import { CharacterCard } from '../components/character-card';
-import { playableCharacters } from '../data/character';
+import { playableCharacters } from '@betrayal/server/src/data/character';
 
 export interface CharacterSelectionProps {
 }

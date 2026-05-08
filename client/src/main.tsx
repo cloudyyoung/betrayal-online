@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './components/auth-provider'
 import TrpcProvider from './components/trpc-provider'
 
-import BetrayalCover from './cover'
+import BetrayalCover from './view/cover'
 import GamesList from './view/games'
 import Game from './view/game'
 import NewGame from './view/new-game'
