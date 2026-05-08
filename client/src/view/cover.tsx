@@ -30,7 +30,7 @@ const BetrayalCover = () => {
                     : <LoginForm onLogin={login} />
                 }
             </div>
-            <div className='text-zinc-700 italic text-sm tracking-tighter leading-4 sticky bottom-0 left-0 right-0 pb-6 sm:pb-4'>
+            <div className='text-zinc-700 italic text-sm tracking-tight leading-4 sticky bottom-0 left-0 right-0 pb-6 sm:pb-4'>
                 Disclaimer: This is an unofficial, fan-made version of Betrayal at the House on the Hill (3rd Edition), created for personal and educational use only.
                 All rights belong to Avalon Hill and Hasbro, Inc.
                 This project is not affiliated with or endorsed by either company.
