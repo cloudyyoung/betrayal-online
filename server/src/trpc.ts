@@ -4,6 +4,9 @@ import type { CreateWSSContextFnOptions } from '@trpc/server/adapters/ws';
 import jwt from 'jsonwebtoken';
 import { AccountModel } from './models';
 import type { Account } from './types/account';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export const JWT_SECRET = process.env.JWT_SECRET ?? (() => { throw new Error('JWT_SECRET env variable is not set'); })();
 
