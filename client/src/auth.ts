@@ -17,12 +17,12 @@ export const getStoredAccount = (): LocalAccount | null => {
     }
 };
 
-export const storeAccount = (user: LocalAccount): void => {
-    localStorage.setItem(AUTH_KEY, JSON.stringify(user));
+export const storeAccount = (account: LocalAccount): void => {
+    localStorage.setItem(AUTH_KEY, JSON.stringify(account));
 };
 
 export const removeAccount = (): void => {
     localStorage.removeItem(AUTH_KEY);
 };
 
-export const getToken = (user: LocalAccount): string => user.token;
+export const getToken = (account: LocalAccount): string => account.token;
