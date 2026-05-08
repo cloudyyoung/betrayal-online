@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { on } from 'events';
 import { router, protectedProcedure } from '../trpc';
-import { GameModel } from '../models';
+import { GameModel } from '../types/game';
 import { GameStatus } from '../types/game';
 import { gameEvents } from '../event-emitter';
 
