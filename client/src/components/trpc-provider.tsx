@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createWSClient, httpBatchLink, splitLink, wsLink } from '@trpc/client';
 import { trpc } from '../trpc';
-import { encodeToken, getStoredUser } from '../auth';
+import { getToken, getStoredAccount } from '../auth';
 
 const queryClient = new QueryClient();
 
@@ -22,8 +22,8 @@ export function TrpcProvider({ children }: { children: React.ReactNode }) {
         const wsClient = createWSClient({
             url: WS_URL,
             connectionParams: () => {
-                const user = getStoredUser();
-                return user ? { token: encodeToken(user) } : {};
+                const user = getStoredAccount();
+                return user ? { token: getToken(user) } : {};
             },
             onOpen: () => setWsConnected(true),
             onClose: () => setWsConnected(false),
@@ -37,8 +37,8 @@ export function TrpcProvider({ children }: { children: React.ReactNode }) {
                     false: httpBatchLink({
                         url: HTTP_URL,
                         headers() {
-                            const user = getStoredUser();
-                            return user ? { Authorization: `Bearer ${encodeToken(user)}` } : {};
+                            const user = getStoredAccount();
+                            return user ? { Authorization: `Bearer ${getToken(user)}` } : {};
                         },
                     }),
                 }),

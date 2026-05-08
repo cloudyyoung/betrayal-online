@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import { type LocalAccount, getStoredUser, storeUser, removeUser } from '../auth';
+import { type LocalAccount, getStoredAccount, storeAccount, removeAccount } from '../auth';
 
 interface AuthContextValue {
     user: LocalAccount | null;
@@ -10,15 +10,15 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue>(undefined!);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState<LocalAccount | null>(getStoredUser);
+    const [user, setUser] = useState<LocalAccount | null>(getStoredAccount);
 
     const login = (user: LocalAccount) => {
-        storeUser(user);
+        storeAccount(user);
         setUser(user);
     };
 
     const logout = () => {
-        removeUser();
+        removeAccount();
         setUser(null);
     };
 

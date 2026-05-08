@@ -1,12 +1,14 @@
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../components/button'
 import { CoverContainer } from '../components/cover-container'
+import { getStoredAccount } from '../auth'
 import { trpc } from '../trpc'
 
 export default function GamesList() {
     const navigate = useNavigate()
     const utils = trpc.useUtils()
     const { data: games = [], refetch } = trpc.game.list.useQuery()
+    const currentEmail = getStoredAccount()?.email
 
     trpc.game.onListChange.useSubscription(undefined, {
         onData: () => {
@@ -17,6 +19,13 @@ export default function GamesList() {
     const onGameDetails = (gameId: string) => {
         navigate(`/games/${encodeURIComponent(gameId)}`)
     }
+
+    const sortedGames = [...games].sort((a, b) => {
+        const aJoined = currentEmail ? currentEmail in a.players : false
+        const bJoined = currentEmail ? currentEmail in b.players : false
+        if (aJoined === bJoined) return 0
+        return aJoined ? -1 : 1
+    })
 
     return (
         <CoverContainer>
@@ -29,20 +38,28 @@ export default function GamesList() {
                     </div>
                 </div>
 
-                {games.map((game) => (
-                    <div
-                        key={game.id}
-                        className='p-4 bg-white/60 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 cursor-pointer'
-                        onClick={() => onGameDetails(game.id)}
-                    >
-                        <div>
-                            <div className='text-xl text-amber-900 font-medium'>{game.name}</div>
-                            <div className='text-amber-800 text-sm'>{Object.keys(game.players).length}/6 players</div>
-                            <p className='text-sm text-amber-800'>Status: {game.status}</p>
-                            <p className='text-sm text-amber-800'>Password Protected: {game.isPasswordProtected ? 'Yes' : 'No'}</p>
+                {sortedGames.map((game) => {
+                    const isJoined = currentEmail ? currentEmail in game.players : false
+                    return (
+                        <div
+                            key={game.id}
+                            className='p-4 bg-white/60 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 cursor-pointer'
+                            onClick={() => onGameDetails(game.id)}
+                        >
+                            <div>
+                                <div className='flex items-center gap-2'>
+                                    <span className='text-xl text-amber-900 font-medium'>{game.name}</span>
+                                    {isJoined && (
+                                        <span className='text-xs font-semibold px-2 py-0.5 bg-amber-700 text-white rounded-full'>Joined</span>
+                                    )}
+                                </div>
+                                <div className='text-amber-800 text-sm'>{Object.keys(game.players).length}/6 players</div>
+                                <p className='text-sm text-amber-800'>Status: {game.status}</p>
+                                <p className='text-sm text-amber-800'>Password Protected: {game.isPasswordProtected ? 'Yes' : 'No'}</p>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    )
+                })}
 
                 {games.length === 0 && (
                     <div className='text-amber-900'>No games found.</div>

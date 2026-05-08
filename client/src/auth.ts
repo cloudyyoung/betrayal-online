@@ -7,7 +7,7 @@ export interface LocalAccount {
 
 const AUTH_KEY = 'betrayal-account';
 
-export const getStoredUser = (): LocalAccount | null => {
+export const getStoredAccount = (): LocalAccount | null => {
     const stored = localStorage.getItem(AUTH_KEY);
     if (!stored) return null;
     try {
@@ -17,12 +17,12 @@ export const getStoredUser = (): LocalAccount | null => {
     }
 };
 
-export const storeUser = (user: LocalAccount): void => {
+export const storeAccount = (user: LocalAccount): void => {
     localStorage.setItem(AUTH_KEY, JSON.stringify(user));
 };
 
-export const removeUser = (): void => {
+export const removeAccount = (): void => {
     localStorage.removeItem(AUTH_KEY);
 };
 
-export const encodeToken = (user: LocalAccount): string => user.token;
+export const getToken = (user: LocalAccount): string => user.token;
